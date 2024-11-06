@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.space_station"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.space_station"
