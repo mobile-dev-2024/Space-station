@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -20,11 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.space_station.ui.theme.SpacestationTheme
+import com.example.space_station.viewmodel.LectureTimetable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Buildings(
-
+    lectureTimetable: LectureTimetable,
+    modifier: Modifier = Modifier,
+    navigator: () -> Unit = {},
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -44,26 +49,31 @@ fun Buildings(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(16.dp),
         ) {
-            item {
-                BuildingCard("310")
+            items(lectureTimetable.buildings.value) { buildingName ->
+                BuildingCard(buildingName, onClick = {
+                    lectureTimetable.setSelectedBuilding(buildingName)
+                    navigator()
+                })
             }
         }
     }
 }
 
 @Composable
-fun BuildingCard(
+private fun BuildingCard(
     buildingName: String,
+    onClick: () -> Unit = {},
 ) {
     ElevatedCard(
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxSize()
+            .fillMaxSize(),
+        onClick = onClick,
     ) {
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(32.dp)
         ){
             Text(buildingName)
             Icon(
@@ -71,13 +81,5 @@ fun BuildingCard(
                 contentDescription = "Settings",
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BuildingsPreview() {
-    SpacestationTheme {
-        Buildings()
     }
 }

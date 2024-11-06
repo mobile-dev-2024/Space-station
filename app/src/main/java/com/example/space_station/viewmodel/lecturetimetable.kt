@@ -20,6 +20,22 @@ class LectureTimetable: ViewModel() {
     var buildings = mutableStateOf<List<String>>(emptyList())
         private set
 
+    var selectedBuilding = mutableStateOf<String>("")
+        private set
+
+    fun setSelectedBuilding(building: String) {
+        selectedBuilding.value = building
+    }
+
+    var selectedFloor = mutableStateOf<String>("")
+        private set
+    var selectedFloorRooms = mutableStateOf<List<Pair<String, String>>>(emptyList())
+        private set
+
+    fun setSelectedFloor(floor: String, rooms: List<Pair<String, String>>) {
+        selectedFloor.value = floor
+        selectedFloorRooms.value = rooms
+    }
 
     // 데이터를 비동기로 로드
     fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx") {
@@ -50,18 +66,33 @@ class LectureTimetable: ViewModel() {
     }
 
 
-    fun getAllRooms(buildingName: String): Map<String, List<Pair<String, String>>> {
+    fun getAllRoomsByBuilding(buildingName: String): Map<String, List<Pair<String, String>>> {
         return data.value
-            .filter { it[11] == buildingName }    // 특정 건물명과 일치하는 행 필터링
+            .filter { it[11] == buildingName } // 특정 건물명과 일치하는 행 필터링
             .mapNotNull { row ->
                 val roomNumber = row[12]
-                val floor = roomNumber.filter { it.isDigit() }.dropLast(2) // 숫자만 남기고 마지막 두 자리 제외
-                if (floor.isNotEmpty()) floor to roomNumber else null // 층 정보가 있는 경우만 반환
+
+                // 층수 추출 로직
+                val floor = when {
+                    roomNumber.startsWith("B") -> roomNumber.take(2) // 'B'로 시작하면 'B'와 다음 숫자 포함
+                    roomNumber.takeWhile { it.isDigit() }.length >= 4 -> roomNumber.take(2) // 네 자리 숫자는 처음 두 자리 사용
+                    roomNumber.takeWhile { it.isDigit() }.length == 3 -> roomNumber.take(1) // 세 자리 숫자는 첫 자리만 사용
+                    else -> roomNumber.takeWhile { it.isDigit() } // 그 외의 숫자만 남김
+                }
+
+                if (floor.isNotEmpty()) floor to roomNumber else null
             }
             .distinct()
-            .sortedBy { it.first }                 // 층별 정렬
-            .groupBy { it.first }
+            .sortedWith(compareBy { it.first.toIntOrNull() ?: Int.MAX_VALUE }) // 숫자로 변환하여 정렬
+            .groupByTo(LinkedHashMap()) { it.first } // LinkedHashMap으로 그룹화하여 순서 보장
     }
+
+
+
+
+
+
+
 
     fun getUsedRooms(building: String, week: String, time: String): Map<String, List<List<String>>> {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
