@@ -69,4 +69,8 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.runtime.livedata)
     implementation (libs.androidx.navigation.compose)
+
+    implementation ("org.apache.poi:poi:5.2.3") // 엑셀 읽기 위한 POI 기본 라이브러리
+    implementation ("org.apache.poi:poi-ooxml:5.2.3") // 엑셀 .xlsx 파일 지원
+    implementation ("org.apache.commons:commons-collections4:4.4") // POI에 필요한 의존성
 }
