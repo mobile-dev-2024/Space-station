@@ -31,10 +31,13 @@ class LectureTimetable: ViewModel() {
         private set
     var selectedFloorRooms = mutableStateOf<List<Pair<String, String>>>(emptyList())
         private set
+    var selectedFloorUsedRooms = mutableStateOf<List<List<String>>>(emptyList())
+        private set
 
-    fun setSelectedFloor(floor: String, rooms: List<Pair<String, String>>) {
+    fun setSelectedFloor(floor: String, rooms: List<Pair<String, String>>, usedRooms: List<List<String>>) {
         selectedFloor.value = floor
         selectedFloorRooms.value = rooms
+        selectedFloorUsedRooms.value = usedRooms
     }
 
     // 데이터를 비동기로 로드
@@ -124,6 +127,26 @@ class LectureTimetable: ViewModel() {
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         return currentDateTime.format(formatter)
+    }
+
+    fun getNextLectureTime(buildings: String, floor: String, room: String, time: String, week: String): String {
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val targetTime = LocalTime.parse(time, formatter)
+
+        val filteredData = data.value.filter { row ->
+            row[11] == buildings &&
+                    row[12] == room &&
+                    row[9] == week &&
+                    LocalTime.parse(row[10].substringBefore("~"), formatter).isAfter(targetTime)
+        }
+
+        // 가장 가까운 이후 시간의 강의 찾기
+        val nextLecture = filteredData.minByOrNull {
+            LocalTime.parse(it[10].substringBefore("~"), formatter)
+        }
+
+        // 다음 강의의 시작 시간을 반환 (HH:mm~HH:mm 형식에서 시작 시간만 반환)
+        return nextLecture?.get(10)?.substringBefore("~") ?: ""
     }
 
     private fun isTimeInRange(timeRange: String, targetTime: LocalTime, formatter: DateTimeFormatter): Boolean {
