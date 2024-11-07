@@ -68,21 +68,23 @@ class LectureTimetable: ViewModel() {
         buildings.value = data.value.mapNotNull { it.getOrNull(11) }.distinct().sorted().filter { it <= "310관" }
     }
 
+    private fun extractionFloor(roomNumber: String): String {
+        // 층수 추출 로직
+        val floor = when {
+            roomNumber.startsWith("B") -> roomNumber.take(2) // 'B'로 시작하면 'B'와 다음 숫자 포함
+            roomNumber.takeWhile { it.isDigit() }.length >= 4 -> roomNumber.take(2) // 네 자리 숫자는 처음 두 자리 사용
+            roomNumber.takeWhile { it.isDigit() }.length == 3 -> roomNumber.take(1) // 세 자리 숫자는 첫 자리만 사용
+            else -> roomNumber.takeWhile { it.isDigit() } // 그 외의 숫자만 남김
+        }
+        return floor
+    }
 
     fun getAllRoomsByBuilding(buildingName: String): Map<String, List<Pair<String, String>>> {
         return data.value
             .filter { it[11] == buildingName } // 특정 건물명과 일치하는 행 필터링
             .mapNotNull { row ->
                 val roomNumber = row[12]
-
-                // 층수 추출 로직
-                val floor = when {
-                    roomNumber.startsWith("B") -> roomNumber.take(2) // 'B'로 시작하면 'B'와 다음 숫자 포함
-                    roomNumber.takeWhile { it.isDigit() }.length >= 4 -> roomNumber.take(2) // 네 자리 숫자는 처음 두 자리 사용
-                    roomNumber.takeWhile { it.isDigit() }.length == 3 -> roomNumber.take(1) // 세 자리 숫자는 첫 자리만 사용
-                    else -> roomNumber.takeWhile { it.isDigit() } // 그 외의 숫자만 남김
-                }
-
+                val floor = extractionFloor(roomNumber)
                 if (floor.isNotEmpty()) floor to roomNumber else null
             }
             .distinct()
@@ -104,7 +106,7 @@ class LectureTimetable: ViewModel() {
 
         return filteredData.groupBy { row ->
             val roomNumber = row[12]
-            val floor = roomNumber.filter { it.isDigit() }.dropLast(2) // 층수 추출
+            val floor = extractionFloor(roomNumber)
             floor
         }
     }
