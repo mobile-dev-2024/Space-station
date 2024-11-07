@@ -1,7 +1,5 @@
 package com.example.space_station.ui.search
 
-import android.R.attr.onClick
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,12 +20,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.space_station.viewmodel.LectureTimetable
-import org.w3c.dom.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,9 +59,6 @@ fun Rooms(
             )
         }
     ) { innerPadding ->
-
-
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,7 +70,7 @@ fun Rooms(
                 val state = userRoomsByFloor.filter { it[12] == item }.isEmpty()
                 val professor = userRoomsByFloor.filter { it[12] == item }.map { it[6] }.firstOrNull() ?: ""
                 val lecture = userRoomsByFloor.filter { it[12] == item }.map { it[4] }.firstOrNull() ?: ""
-                val nextLectureTime = lectureTimetable.getNextLectureTime(building, floor, item, lectureTimetable.getNowKoreanTime(), lectureTimetable.getNowKoreanDayOfWeek())
+                val lectureEndTime = userRoomsByFloor.filter { it[12] == item }.map { it[10] }.firstOrNull() ?: ""
                 item {
                     RoomCard(
                         room = item ,
@@ -84,6 +78,7 @@ fun Rooms(
                         state = state,
                         professor = professor,
                         lecture = lecture,
+                        lectureEndTime = lectureEndTime,
                         nextLectureTime = {
                             lectureTimetable.getNextLectureTime(building, floor, item, lectureTimetable.getNowKoreanTime(), lectureTimetable.getNowKoreanDayOfWeek())
                         }
@@ -100,6 +95,7 @@ private fun RoomCard(
     state: Boolean = false,
     professor: String = "",
     lecture: String = "",
+    lectureEndTime: String = "",
     onClick: () -> Unit = {},
     nextLectureTime : () -> String,
 ) {
@@ -123,11 +119,6 @@ private fun RoomCard(
                     val nextLectureTimeString = nextLectureTime()
                     Column {
                         Text(room, style = typography.titleLarge)
-                        if (nextLectureTimeString == "") {
-                            Text("다음 수업 없음", style = typography.titleSmall)
-                        } else {
-                            Text("다음 수업 ${nextLectureTimeString}", style = typography.titleSmall)
-                        }
                     }
                 } else {
                     Text(room, style = typography.titleLarge)
@@ -138,25 +129,50 @@ private fun RoomCard(
                 contentAlignment = Alignment.Center,
             ){
                 if (state) {
-                    Text("빈 강의실")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("빈 강의실", style = typography.titleMedium)
+                        if (nextLectureTime() == "") {
+                            Text("다음 수업 없음", fontSize = 12.sp)
+                        } else {
+                            Text("다음 수업 ${nextLectureTime()}", fontSize = 12.sp)
+                        }
+                    }
                 } else {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-//                    Text(lecture)
-//                    Text(professor)
-                        Text("수업 중")
+                        Text("수업 중", style = typography.titleMedium)
+                        Text(lectureEndTime,  fontSize = 12.sp)
                     }
                 }
             }
             Box(
                 modifier = Modifier.weight(1f).fillMaxSize(),
-                contentAlignment = Alignment.CenterEnd,
+                contentAlignment = Alignment.Center,
             ){
-                Button(
-                    onClick = { /*TODO*/ },
-                ) {
-                    Text("입실하기")
+                if (state) {
+                    if (nextLectureTime() == "") {
+                        Button(
+                            onClick = { /*TODO*/ },
+                        ) {
+                            Text("자유입실")
+                        }
+                    } else {
+                        Button(
+                            onClick = { /*TODO*/ },
+                        ) {
+                            Text("입실하기")
+                        }
+                    }
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(if (lecture.length >5) lecture.substring(0,5) + "..." else lecture, style = typography.titleMedium)
+                        Text(professor,  fontSize = 12.sp)
+                    }
                 }
             }
         }
