@@ -1,5 +1,6 @@
 package com.example.space_station.ui.search
 
+import android.R.attr.onClick
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,12 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.space_station.core.NotificationService
 import com.example.space_station.viewmodel.LectureTimetable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Rooms(
     lectureTimetable: LectureTimetable,
+    notificationService: NotificationService,
     backNavigator: () -> Unit = {},
 ) {
     val building = lectureTimetable.selectedBuilding.value
@@ -79,6 +82,10 @@ fun Rooms(
                         professor = professor,
                         lecture = lecture,
                         lectureEndTime = lectureEndTime,
+                        checkIn = { notificationService.showBasicNotification(
+                            title = "퇴실 알림",
+                            content = "10분 뒤에 $building ${item}에서 수업이 시작됩니다. 퇴실해주세요."
+                        ) },
                         nextLectureTime = {
                             lectureTimetable.getNextLectureTime(building, floor, item, lectureTimetable.getNowKoreanTime(), lectureTimetable.getNowKoreanDayOfWeek())
                         }
@@ -96,6 +103,7 @@ private fun RoomCard(
     professor: String = "",
     lecture: String = "",
     lectureEndTime: String = "",
+    checkIn:  () -> Unit = {},
     onClick: () -> Unit = {},
     nextLectureTime : () -> String,
 ) {
@@ -155,13 +163,13 @@ private fun RoomCard(
                 if (state) {
                     if (nextLectureTime() == "") {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {},
                         ) {
                             Text("자유입실")
                         }
                     } else {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = checkIn,
                         ) {
                             Text("입실하기")
                         }

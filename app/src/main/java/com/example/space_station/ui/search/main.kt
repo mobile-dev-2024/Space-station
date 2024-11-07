@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.space_station.core.NotificationService
 
 import com.example.space_station.viewmodel.LectureTimetable
 
@@ -13,8 +14,8 @@ import com.example.space_station.viewmodel.LectureTimetable
 @Composable
 fun SearchMain(
     lectureTimetable: LectureTimetable,
+    notificationService: NotificationService
 ) {
-
     val navController = rememberNavController()
 
     NavHost(
@@ -37,9 +38,9 @@ fun SearchMain(
         composable(route = "rooms") {
             Rooms(
                 lectureTimetable = lectureTimetable,
+                notificationService = notificationService,
                 backNavigator = { navController.navigateUp() }
             )
         }
     }
-
 }
