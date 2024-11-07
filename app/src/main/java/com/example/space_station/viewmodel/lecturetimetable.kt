@@ -1,14 +1,14 @@
 package com.example.space_station.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.apache.poi.hssf.usermodel.HeaderFooter.time
 import org.apache.poi.ss.usermodel.WorkbookFactory
+import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -88,12 +88,6 @@ class LectureTimetable: ViewModel() {
     }
 
 
-
-
-
-
-
-
     fun getUsedRooms(building: String, week: String, time: String): Map<String, List<List<String>>> {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val targetTime = LocalTime.parse(time, formatter)
@@ -110,6 +104,26 @@ class LectureTimetable: ViewModel() {
             val floor = roomNumber.filter { it.isDigit() }.dropLast(2) // 층수 추출
             floor
         }
+    }
+
+
+    fun getNowKoreanDayOfWeek(): String {
+        val currentDateTime = LocalDateTime.now()
+        return when (currentDateTime.dayOfWeek) {
+            DayOfWeek.MONDAY -> "월"
+            DayOfWeek.TUESDAY -> "화"
+            DayOfWeek.WEDNESDAY -> "수"
+            DayOfWeek.THURSDAY -> "목"
+            DayOfWeek.FRIDAY -> "금"
+            DayOfWeek.SATURDAY -> "토"
+            DayOfWeek.SUNDAY -> "일"
+        }
+    }
+
+    fun getNowKoreanTime(): String {
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        return currentDateTime.format(formatter)
     }
 
     private fun isTimeInRange(timeRange: String, targetTime: LocalTime, formatter: DateTimeFormatter): Boolean {
