@@ -3,6 +3,7 @@ package com.example.space_station.ui.search
 import android.R.attr.onClick
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -110,34 +111,54 @@ private fun RoomCard(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize().padding(32.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            if (state) {
-                val nextLectureTimeString = nextLectureTime()
-                Column {
+            Box(
+                modifier = Modifier.weight(1f).fillMaxSize(),
+                contentAlignment = Alignment.CenterStart,
+            ){
+                if (state) {
+                    val nextLectureTimeString = nextLectureTime()
+                    Column {
+                        Text(room, style = typography.titleLarge)
+                        if (nextLectureTimeString == "") {
+                            Text("다음 수업 없음", style = typography.titleSmall)
+                        } else {
+                            Text("다음 수업 ${nextLectureTimeString}", style = typography.titleSmall)
+                        }
+                    }
+                } else {
                     Text(room, style = typography.titleLarge)
-                    if (nextLectureTimeString == "") {
-                        Text("다음 수업 없음")
-                    } else {
-                        Text("다음 수업 ${nextLectureTimeString}")
+                }
+            }
+            Box(
+                modifier = Modifier.weight(1f).fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ){
+                if (state) {
+                    Text("빈 강의실")
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+//                    Text(lecture)
+//                    Text(professor)
+                        Text("수업 중")
                     }
                 }
-            } else {
-                Text(room, style = typography.titleLarge)
             }
-            if (state) {
-                Text("공강")
-            } else {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier.weight(1f).fillMaxSize(),
+                contentAlignment = Alignment.CenterEnd,
+            ){
+                Button(
+                    onClick = { /*TODO*/ },
                 ) {
-                    Text(lecture)
-                    Text(professor)
+                    Text("입실하기")
                 }
             }
-            Button(
-                onClick = { /*TODO*/ },
-            ) { }
         }
     }
 }
