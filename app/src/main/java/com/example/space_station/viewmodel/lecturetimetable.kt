@@ -22,7 +22,6 @@ class LectureTimetable: ViewModel() {
 
     var selectedBuilding = mutableStateOf<String>("")
         private set
-
     fun setSelectedBuilding(building: String) {
         selectedBuilding.value = building
     }
@@ -33,12 +32,23 @@ class LectureTimetable: ViewModel() {
         private set
     var selectedFloorUsedRooms = mutableStateOf<List<List<String>>>(emptyList())
         private set
-
     fun setSelectedFloor(floor: String, rooms: List<Pair<String, String>>, usedRooms: List<List<String>>) {
         selectedFloor.value = floor
         selectedFloorRooms.value = rooms
         selectedFloorUsedRooms.value = usedRooms
     }
+
+    var checkedInRooms = mutableStateOf<CheckedInRoom?>(null)
+        private set
+    fun CheckInRoom(building: String, floor: String, room: String, checkOutTime: String) {
+        checkedInRooms.value = CheckedInRoom(building, floor, room, checkOutTime)
+    }
+    fun CheckOutRoom() {
+        checkedInRooms.value = null
+    }
+
+
+
 
     // 데이터를 비동기로 로드
     fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx") {
@@ -131,7 +141,7 @@ class LectureTimetable: ViewModel() {
         return currentDateTime.format(formatter)
     }
 
-    fun getNextLectureTime(buildings: String, floor: String, room: String, time: String, week: String): String {
+    fun getNextLectureTime(buildings: String, floor: String, room: String, time: String, week: String): String? {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val targetTime = LocalTime.parse(time, formatter)
 
@@ -147,8 +157,8 @@ class LectureTimetable: ViewModel() {
             LocalTime.parse(it[10].substringBefore("~"), formatter)
         }
 
-        // 다음 강의의 시작 시간을 반환 (HH:mm~HH:mm 형식에서 시작 시간만 반환)
-        return nextLecture?.get(10)?.substringBefore("~") ?: ""
+        // 다음 강의의 시작 시간을 반환 (HH:mm~HH:mm 형식에서 시작 시간만 반환 없으면 널 반환)
+        return nextLecture?.get(10)?.substringBefore("~")
     }
 
     private fun isTimeInRange(timeRange: String, targetTime: LocalTime, formatter: DateTimeFormatter): Boolean {
@@ -161,3 +171,10 @@ class LectureTimetable: ViewModel() {
         return targetTime.isAfter(startTime) && targetTime.isBefore(endTime)
     }
 }
+
+data class CheckedInRoom(
+    val building: String,
+    val floor: String,
+    val room: String,
+    val checkOutTime: String,
+)

@@ -74,7 +74,15 @@ fun Rooms(
                 val professor = userRoomsByFloor.filter { it[12] == item }.map { it[6] }.firstOrNull() ?: ""
                 val lecture = userRoomsByFloor.filter { it[12] == item }.map { it[4] }.firstOrNull() ?: ""
                 val lectureEndTime = userRoomsByFloor.filter { it[12] == item }.map { it[10] }.firstOrNull() ?: ""
+
                 item {
+                    val nextLectureTime = lectureTimetable.getNextLectureTime(
+                        building,
+                        floor,
+                        item,
+                        lectureTimetable.getNowKoreanTime(),
+                        lectureTimetable.getNowKoreanDayOfWeek()
+                    )
                     RoomCard(
                         room = item ,
                         onClick = {},
@@ -82,13 +90,16 @@ fun Rooms(
                         professor = professor,
                         lecture = lecture,
                         lectureEndTime = lectureEndTime,
-                        checkIn = { notificationService.showBasicNotification(
-                            title = "퇴실 알림",
-                            content = "10분 뒤에 $building ${item}에서 수업이 시작됩니다. 퇴실해주세요."
-                        ) },
-                        nextLectureTime = {
-                            lectureTimetable.getNextLectureTime(building, floor, item, lectureTimetable.getNowKoreanTime(), lectureTimetable.getNowKoreanDayOfWeek())
-                        }
+                        checkIn = {
+                            //체크인 함
+                            lectureTimetable.CheckInRoom(building, floor, item, "여기에 다음 수업 시간 시작 시간 또는 내 다음 수업 시간 시작 시간")
+
+                            // 퇴실 시간 계산해서 푸시 워커에 등록 하는 로직 만들어야 함
+                            notificationService.showBasicNotification(
+                                title = "퇴실 알림",
+                                content = "10분 뒤에 $building ${item}에서 수업이 시작됩니다. 퇴실해주세요."
+                            ) },
+                        nextLectureTime = nextLectureTime
                     )
                 }
             }
@@ -105,7 +116,7 @@ private fun RoomCard(
     lectureEndTime: String = "",
     checkIn:  () -> Unit = {},
     onClick: () -> Unit = {},
-    nextLectureTime : () -> String,
+    nextLectureTime : String?,
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -124,7 +135,6 @@ private fun RoomCard(
                 contentAlignment = Alignment.CenterStart,
             ){
                 if (state) {
-                    val nextLectureTimeString = nextLectureTime()
                     Column {
                         Text(room, style = typography.titleLarge)
                     }
@@ -141,10 +151,10 @@ private fun RoomCard(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text("빈 강의실", style = typography.titleMedium)
-                        if (nextLectureTime() == "") {
+                        if (nextLectureTime == null) {
                             Text("다음 수업 없음", fontSize = 12.sp)
                         } else {
-                            Text("다음 수업 ${nextLectureTime()}", fontSize = 12.sp)
+                            Text("다음 수업 $nextLectureTime", fontSize = 12.sp)
                         }
                     }
                 } else {
@@ -161,7 +171,7 @@ private fun RoomCard(
                 contentAlignment = Alignment.Center,
             ){
                 if (state) {
-                    if (nextLectureTime() == "") {
+                    if (nextLectureTime == null) {
                         Button(
                             onClick = {},
                         ) {
