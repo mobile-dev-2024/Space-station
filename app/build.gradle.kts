@@ -75,4 +75,5 @@ dependencies {
     implementation ("org.apache.commons:commons-collections4:4.4") // POI에 필요한 의존성
 
     implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha") //푸시서비스
+    implementation ("androidx.work:work-runtime-ktx:2.10.0") //워커매니저
 }
