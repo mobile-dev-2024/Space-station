@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.space_station.ui.timetable.AddTimetablePage
+import com.example.space_station.ui.timetable.TimetablePage
 
 import com.example.space_station.viewmodel.LectureTimetable
 
@@ -37,6 +39,17 @@ fun SearchMain(
         composable(route = "rooms") {
             Rooms(
                 lectureTimetable = lectureTimetable,
+                backNavigator = { navController.navigateUp() }
+            )
+        }
+        composable(route = "timetable") {
+            TimetablePage(
+                onAddButtonClicked = {navController.navigate("addTimetable")},
+                onSettingClicked = {}
+            )
+        }
+        composable(route = "addTimetable") {
+            AddTimetablePage(
                 backNavigator = { navController.navigateUp() }
             )
         }
