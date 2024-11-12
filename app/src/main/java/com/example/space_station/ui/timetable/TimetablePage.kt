@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,12 +49,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.space_station.ui.theme.BackgroundColor
 import com.example.space_station.ui.theme.MainContainerColor
+import com.example.space_station.ui.theme.Pink80
+import com.example.space_station.ui.theme.Purple40
+import com.example.space_station.ui.theme.PurpleGrey80
 
 
-@Preview
+data class TimetableSubject(
+    val day: String, //월 화 와 같이 한글자
+    val startHour: Int,
+    val startMinute : Int,
+    val endHour: Int,
+    val endMinute : Int,
+    val name: String
+)
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimetablePage() {
+fun TimetablePage(
+    onAddButtonClicked : () -> Unit,
+    onSettingClicked : () -> Unit,
+) {
     Scaffold(
         containerColor = BackgroundColor,
         modifier = Modifier.fillMaxSize(),
@@ -63,7 +79,7 @@ fun TimetablePage() {
                 title = { Text("시간표") },
                 actions = {
                     IconButton(
-                        onClick = {},
+                        onClick = onAddButtonClicked,
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Icon(
@@ -73,7 +89,7 @@ fun TimetablePage() {
                             contentDescription = "Add timetable"
                         )
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = onSettingClicked) {
                         Icon(
                             modifier = Modifier.size(35.dp),
                             tint = Color.White,
@@ -88,9 +104,16 @@ fun TimetablePage() {
             )
         }
     ) { innerPadding ->
+
+        val subjects = listOf(
+            TimetableSubject("월", 9, 30, 11, 0, "모바일 앱 개발"),
+            TimetableSubject("화", 10, 0, 12, 0, "IOT 프로젝트"),
+            TimetableSubject("수", 13, 30, 15, 30, "ACT")
+        )
+
         val endTime = 18
         val times = (8..endTime).flatMap { hour ->
-            listOf(if (hour > 12) "${hour - 12}" else "$hour", "")
+            listOf(if (hour > 12) "${hour - 12}" else "$hour","  ")
         }
         val days = listOf("월", "화", "수", "목", "금")
 
@@ -100,7 +123,7 @@ fun TimetablePage() {
                 .padding(innerPadding)
                 .padding(8.dp)
                 .padding(bottom = 16.dp, end = 8.dp)
-                .verticalScroll(rememberScrollState()) // 세로 스크롤 가능하게 설정
+                .verticalScroll(rememberScrollState())
         ) {
             // 요일 헤더
             Row(
@@ -115,14 +138,21 @@ fun TimetablePage() {
                         text = day,
                         fontSize = 16.sp,
                         color = Color.White,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .width(77.dp)
+//                            .weight(1f)
+                            .padding(bottom = 4.dp),
                         textAlign = TextAlign.Center
                     )
                 }
             }
 
             // 시간표 본체
-            times.forEach { time ->
+            times.forEachIndexed { rowIndex, time ->
+
+                val currentHour = 8 + rowIndex / 2
+                val currentMinute = if (rowIndex % 2 == 0) 0 else 30
+
                 Row(modifier = Modifier.fillMaxWidth()) {
                     // 시간 열
                     Box(
@@ -139,16 +169,32 @@ fun TimetablePage() {
                         )
                     }
 
-                    // 요일 열
-                    days.forEach {
+                    // 시간표 셀
+                    days.forEach { day ->
+                        val currentSubject = subjects.find {
+                            it.day == day &&
+                                    ((currentHour > it.startHour || (currentHour == it.startHour && currentMinute >= it.startMinute)) &&
+                                            (currentHour < it.endHour || (currentHour == it.endHour && currentMinute < it.endMinute)))
+                        }
+
                         Box(
                             modifier = Modifier
-                                .weight(1f)
+//                                .weight(1f)
+                                .width(77.dp)
                                 .height(50.dp)
-                                .border(1.dp, Color.Gray),
-                            contentAlignment = Alignment.Center
+                                .background(if (currentSubject != null) Pink80 else Color.Transparent)
+                                .border(0.5.dp, if (currentSubject != null) Pink80 else Color.Gray),
+
                         ) {
-                            // 시간표 셀 (빈 셀)
+                            // 과목 이름 표시
+                            currentSubject?.takeIf { currentHour == it.startHour && currentMinute == it.startMinute }?.let {
+                                Text(
+                                    text = it.name,
+                                    fontSize = 12.sp,
+                                    color = Color.Black,
+                                    modifier = Modifier.padding(2.dp)
+                                )
+                            }
                         }
                     }
                 }
