@@ -51,6 +51,7 @@ import com.example.space_station.ui.theme.BackgroundColor
 import com.example.space_station.ui.theme.MainContainerColor
 import com.example.space_station.ui.theme.Pink80
 import com.example.space_station.ui.theme.Purple40
+import com.example.space_station.ui.theme.Purple80
 import com.example.space_station.ui.theme.PurpleGrey80
 
 
@@ -70,6 +71,9 @@ fun TimetablePage(
     onAddButtonClicked : () -> Unit,
     onSettingClicked : () -> Unit,
 ) {
+    val colorList = listOf(Pink80, Purple80, PurpleGrey80)
+
+
     Scaffold(
         containerColor = BackgroundColor,
         modifier = Modifier.fillMaxSize(),
@@ -177,13 +181,18 @@ fun TimetablePage(
                                             (currentHour < it.endHour || (currentHour == it.endHour && currentMinute < it.endMinute)))
                         }
 
+                        val color = currentSubject?.let { subject ->
+                            val subjectIndex = subjects.indexOf(subject)
+                            colorList[subjectIndex % colorList.size]
+                        } ?: Color.Transparent
+
                         Box(
                             modifier = Modifier
 //                                .weight(1f)
                                 .width(77.dp)
                                 .height(50.dp)
-                                .background(if (currentSubject != null) Pink80 else Color.Transparent)
-                                .border(0.5.dp, if (currentSubject != null) Pink80 else Color.Gray),
+                                .background(color)
+                                .border(0.5.dp, if (currentSubject != null) color else Color.Gray),
 
                         ) {
                             // 과목 이름 표시
