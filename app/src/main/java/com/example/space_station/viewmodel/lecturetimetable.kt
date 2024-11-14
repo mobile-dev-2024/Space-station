@@ -43,10 +43,16 @@ class LectureTimetable: ViewModel() {
 
     var checkedInRooms = mutableStateOf<CheckedInRoom?>(null)
         private set
+    fun CheckInCheck(building: String, floor: String, room: String): Boolean {
+        val currentRoom = checkedInRooms.value
+        return (currentRoom?.building == building
+                && currentRoom.floor == floor &&
+                currentRoom.room == room)
+    }
     fun CheckInRoom(building: String, floor: String, room: String, checkOutTime: String) {
         checkedInRooms.value = CheckedInRoom(building, floor, room, checkOutTime)
     }
-    fun CheckOutRoom(context: Context, workId: UUID) {
+    fun CheckOutRoom(context: Context) {
         // 푸시 알림을 취소 함
         explicitlyCancelled.value = true
         WorkManager.getInstance(context).cancelWorkById(latestPushWorkId.value!!)

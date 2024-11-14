@@ -130,7 +130,9 @@ fun Rooms(
                             lectureTimetable.observeWorkCompletion(workerID.id, context)
                         },
                         nextLectureTime = nextLectureTime,
-                        nextMyLectureTime = myNextLectureTime
+                        nextMyLectureTime = myNextLectureTime,
+                        isUsing = { lectureTimetable.CheckInCheck(building, floor, item) },
+                        checkOut = { context: Context -> lectureTimetable.CheckOutRoom(context) }
                     )
                 }
             }
@@ -148,7 +150,9 @@ private fun RoomCard(
     checkIn: (Context) -> Unit = {},
     onClick: () -> Unit = {},
     nextLectureTime : String?,
-    nextMyLectureTime : String?
+    nextMyLectureTime : String?,
+    isUsing: () -> Boolean = { false },
+    checkOut: (Context) -> Unit = {}
 ) {
     var context = LocalContext.current
     ElevatedCard(
@@ -209,6 +213,12 @@ private fun RoomCard(
                             enabled = false
                         ) {
                             Text("자유입실")
+                        }
+                    } else if(isUsing()) {
+                        Button(
+                            onClick = { checkOut(context) },
+                        ) {
+                            Text("퇴실하기")
                         }
                     } else {
                         Button(
