@@ -8,6 +8,7 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
@@ -73,7 +74,11 @@ fun scheduleNotification(
         .setInputData(data) // 알림 데이터 전달
         .build()
 
-    // WorkManager에 작업 예약
-    WorkManager.getInstance(context).enqueue(workRequest)
+    // WorkManager에 작업 예약, 같은 이름으로 중복 예약 시 최신 작업만 유지
+    WorkManager.getInstance(context).enqueueUniqueWork(
+        "unique_notification_work",  // 고유 작업 이름
+        ExistingWorkPolicy.REPLACE,   // 기존 작업을 대체
+        workRequest
+    )
 }
 
