@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.space_station.navigation.PageManager
+import com.example.space_station.ui.main.MainPage
 import com.example.space_station.ui.search.Buildings
 import com.example.space_station.ui.search.SearchMain
 import com.example.space_station.ui.theme.SpacestationTheme
@@ -26,13 +28,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SpacestationTheme {
-                val lectureTimetableViewModel = viewModel<LectureTimetable>()
-                lectureTimetableViewModel.loadExcelData(this)
-
-                SearchMain(
-                    lectureTimetable = lectureTimetableViewModel
-                )
-
+//                val lectureTimetableViewModel = viewModel<LectureTimetable>()
+//                lectureTimetableViewModel.loadExcelData(this)
+//
+//                SearchMain(
+//                    lectureTimetable = lectureTimetableViewModel
+//                )
+                PageManager()
 
 //                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 //                    Greeting(
