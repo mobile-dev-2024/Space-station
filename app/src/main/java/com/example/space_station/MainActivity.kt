@@ -23,33 +23,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SpacestationTheme {
+                // 강의 시간표 데이터 로드
+                val lectureTimetableViewModel = viewModel<LectureTimetable>()
+                lectureTimetableViewModel.loadExcelData(this)
+
+                // 알림 권한 요청
                 val postNotificationPermission =
                     rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-
                 val notificationService = NotificationService(this)
-
                 LaunchedEffect(key1 = true) {
                     if (!postNotificationPermission.status.isGranted) {
                         postNotificationPermission.launchPermissionRequest()
                     }
                 }
 
-                val lectureTimetableViewModel = viewModel<LectureTimetable>()
-                lectureTimetableViewModel.loadExcelData(this)
-
                 SearchMain(
                     lectureTimetable = lectureTimetableViewModel,
                     notificationService = notificationService
                 )
 
-
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding),
-//                        lectureTimetable = lectureTimetableViewModel
-//                    )
-//                }
             }
         }
     }
