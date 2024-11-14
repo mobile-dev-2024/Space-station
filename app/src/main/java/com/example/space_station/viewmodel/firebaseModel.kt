@@ -9,4 +9,5 @@ import com.google.firebase.storage.FirebaseStorage
 class firebaseModel :ViewModel() {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
+    
 }
