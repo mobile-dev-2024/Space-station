@@ -41,7 +41,6 @@ fun Rooms(
     val floor = lectureTimetable.selectedFloor.value
     val rooms = lectureTimetable.selectedFloorRooms.value.sortedBy { it.second }
     val userRoomsByFloor = lectureTimetable.selectedFloorUsedRooms.value.sortedBy { it[12] }
-    val myNextLectureTime: String? = "11:00" // 내 다음 수업 시간 없으면 null
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -86,6 +85,8 @@ fun Rooms(
                         lectureTimetable.getNowKoreanTime(),
                         lectureTimetable.getNowKoreanDayOfWeek()
                     )
+                    val myNextLectureTime: String? = null// 내 다음 수업 시간 없으면 null
+
                     RoomCard(
                         room = item ,
                         onClick = {},
@@ -97,15 +98,22 @@ fun Rooms(
                             val nextTime = nextLectureTime
                             val myTime = myNextLectureTime
 
-                            // 나중에 다시 보자
-                            val (message, time: String) = if (nextTime != null && (myTime == null || myTime >= nextTime)) {
-                                // 내 수업시간이 널이거나 내 수업시간이 빈 강의실의 다음 수업시간보다 늦는 경우
-                                Pair("10분 뒤에 $building ${item}에서 수업이 시작됩니다. 퇴실해 주세요.", nextTime)
-                            } else if (myTime != null && (nextTime == null || myTime <= nextTime)) {
-                                // 강의실 수업 시간은 아직인데 내 수업시간이 먼저 인경우
+                            val (message, time: String) = if (nextTime != null && myTime != null) {
+                                // 둘다 널이 아닌 경우 둘중 빠른 시간에 맞춰서 푸시 알림 보내기
+                                if (myTime <= nextTime) {
+                                    Pair("내 다음 수업 시작 10분전 입니다. $building ${item}에서 퇴실 합니다.", myTime)
+                                } else {
+                                    Pair("10분 뒤에 $building ${item}에서 수업이 시작됩니다. 퇴실해 주세요.", nextTime)
+                                }
+                            } else if (nextTime == null && myTime != null) {
+                                // 강의실의 다음 수업이 없으면 내 수업 시간에 맞춰서 푸시 알림 보내기
                                 Pair("내 다음 수업 시작 10분전 입니다. $building ${item}에서 퇴실 합니다.", myTime)
+                            } else if (myTime == null && nextTime != null) {
+                                // 내 다음 수업이 없으면 강의실의 다음 수업에 맞춰서 푸시 알리 보내기
+                                Pair("10분 뒤에 $building ${item}에서 수업이 시작됩니다. 퇴실해 주세요.", nextTime)
                             } else {
-                                // 이 경우는 발생 하지 않음 둘다 널이면 자유 입실이라서 체크인이 실행 안됨
+                                // 강의실의 다음 수업도 없고 내 다음 수업도 없으면 그냥 자유 입실 푸시 같은거 없음
+                                // 어짜피 버튼 클릭이 불가능 함
                                 Pair("", "")
                             }
 
@@ -120,7 +128,8 @@ fun Rooms(
                                 delayInMinutes = 1 //퇴실시간 계산 하는로직 필요 함
                             )
                                   },
-                        nextLectureTime = nextLectureTime
+                        nextLectureTime = nextLectureTime,
+                        nextMyLectureTime = myNextLectureTime
                     )
                 }
             }
@@ -138,6 +147,7 @@ private fun RoomCard(
     checkIn: (Context) -> Unit = {},
     onClick: () -> Unit = {},
     nextLectureTime : String?,
+    nextMyLectureTime : String?
 ) {
     var context = LocalContext.current
     ElevatedCard(
@@ -191,9 +201,11 @@ private fun RoomCard(
                 contentAlignment = Alignment.Center,
             ){
                 if (state) {
-                    if (nextLectureTime == null) {
+                    if (nextLectureTime == null && nextMyLectureTime == null) {
+                        // 강의실의 다음 수업도 없도 내 다음 수없도 없는 경우 자유 입실
                         Button(
                             onClick = {},
+                            enabled = false
                         ) {
                             Text("자유입실")
                         }

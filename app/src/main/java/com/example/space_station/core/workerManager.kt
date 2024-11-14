@@ -48,6 +48,9 @@ class NotificationWorker(
             .build()
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+
+        // 체크아웃 하는 로직 타야 함
+
     }
 }
 
