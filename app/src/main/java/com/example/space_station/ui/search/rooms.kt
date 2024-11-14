@@ -121,13 +121,14 @@ fun Rooms(
                             lectureTimetable.CheckInRoom(building, floor, item, time)
 
                             // 퇴실 시간 계산해서 푸시 워커에 등록 하는 로직 만들어야 함
-                            scheduleNotification(
+                            val workerID = scheduleNotification(
                                 context = context,
                                 title = "퇴실 알림",
                                 content = message,
                                 delayInMinutes = 1 //퇴실시간 계산 하는로직 필요 함
                             )
-                                  },
+                            lectureTimetable.observeWorkCompletion(workerID.id, context)
+                        },
                         nextLectureTime = nextLectureTime,
                         nextMyLectureTime = myNextLectureTime
                     )

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -11,6 +13,7 @@ import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class LectureTimetable: ViewModel() {
 
@@ -43,11 +46,43 @@ class LectureTimetable: ViewModel() {
     fun CheckInRoom(building: String, floor: String, room: String, checkOutTime: String) {
         checkedInRooms.value = CheckedInRoom(building, floor, room, checkOutTime)
     }
-    fun CheckOutRoom() {
+    fun CheckOutRoom(context: Context, workId: UUID) {
+        // 푸시 알림을 취소 함
+        explicitlyCancelled.value = true
+        WorkManager.getInstance(context).cancelWorkById(latestPushWorkId.value!!)
+    }
+    private fun checkOutRoom() {
         checkedInRooms.value = null
     }
-
-
+    // 외부에서 전달받은 작업 ID로 작업 상태를 관찰
+    var latestPushWorkId = mutableStateOf<UUID?>(null)
+        private set
+    var explicitlyCancelled = mutableStateOf(false)
+        private set
+    fun observeWorkCompletion(workId: UUID, context: Context) {
+        latestPushWorkId.value = workId
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(workId).observeForever { workInfo ->
+            if (workInfo != null) {
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        // 성공적으로 완료된 경우
+                        checkOutRoom()
+                    }
+                    WorkInfo.State.CANCELLED -> {
+                        if (explicitlyCancelled.value) {
+                            // 명시적인 취소인 경우에만 체크아웃
+                            // 덮어씌워져서 취소 된 경우는 다른 룸으로 체크인한 경우이므로 체크아웃하지 않음
+                            checkOutRoom()
+                            explicitlyCancelled.value = false
+                        }
+                    }
+                    else -> {
+                        // 기타 상태 처리 가능
+                    }
+                }
+            }
+        }
+    }
 
 
     // 데이터를 비동기로 로드

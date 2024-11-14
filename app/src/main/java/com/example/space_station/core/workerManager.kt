@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
@@ -27,7 +28,8 @@ class NotificationWorker(
         // 알림을 표시하는 함수 호출
         showNotification(title, content)
 
-        return Result.success()
+        // 알림 완료 상태 전달
+        return Result.success(Data.Builder().putBoolean("isNotified", true).build())
     }
 
     // 실제 알림을 표시하는 함수
@@ -61,7 +63,7 @@ fun scheduleNotification(
     title: String,
     content: String,
     delayInMinutes: Long = 10 // 기본값: 10분 후 알림
-) {
+): OneTimeWorkRequest {
     // Data 객체를 사용하여 Worker에 전달할 데이터를 정의합니다
     val data = Data.Builder()
         .putString("title", title)
@@ -80,5 +82,6 @@ fun scheduleNotification(
         ExistingWorkPolicy.REPLACE,   // 기존 작업을 대체
         workRequest
     )
+    return workRequest
 }
 
