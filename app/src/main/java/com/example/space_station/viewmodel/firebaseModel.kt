@@ -11,13 +11,10 @@ class FirebaseModel :ViewModel() {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
 
-    private fun createUser(uid:String){
-
-    }
 
     fun getCurrentUser():FirebaseUser?{
-        return null
-        //return auth.currentUser
+        return null //교체하기
+        //return auth.currentUser 
     }
 
     fun registerUser(email:String, password:String){
@@ -33,6 +30,18 @@ class FirebaseModel :ViewModel() {
             .addOnFailureListener{exception->
                     //회원가입 요청 실패 
             }
+
+    }
+
+    fun logout(){
+        auth.signOut()
+    }
+
+
+
+
+
+    private fun createUser(uid:String){
 
     }
 
