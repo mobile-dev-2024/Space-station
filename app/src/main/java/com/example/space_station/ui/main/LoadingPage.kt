@@ -43,7 +43,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.graphicsLayer
 
 @Composable
-fun LoadingPage(onNavigateToMainPage: () -> Unit) {
+fun LoadingPage(
+    onClick:()->Unit
+) {
     val circleRadius = remember { mutableStateOf(0.dp) }
     val startPosition = remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -62,7 +64,7 @@ fun LoadingPage(onNavigateToMainPage: () -> Unit) {
                 )
                 .pointerInput(Unit) {
 
-                    onNavigateToMainPage()
+                    onClick()
 
                 }
         ) {
