@@ -117,17 +117,21 @@ fun Rooms(
                                 Pair("", "")
                             }
 
-                            //체크인 함
-                            lectureTimetable.CheckInRoom(building, floor, item, time)
+                            val pushDelay = lectureTimetable.getMinuteDifference(time)
+                            if ( pushDelay > 10 ){                            //체크인 함
+                                lectureTimetable.CheckInRoom(building, floor, item, time)
 
-                            // 퇴실 시간 계산해서 푸시 워커에 등록 하는 로직 만들어야 함
-                            val workerID = scheduleNotification(
-                                context = context,
-                                title = "퇴실 알림",
-                                content = message,
-                                delayInMinutes = 1 //퇴실시간 계산 하는로직 필요 함
-                            )
-                            lectureTimetable.observeWorkCompletion(workerID.id, context)
+                                // 퇴실 시간 계산해서 푸시 워커에 등록 하는 로직 만들어야 함
+                                val workerID = scheduleNotification(
+                                    context = context,
+                                    title = "퇴실 알림",
+                                    content = message,
+                                    delayInMinutes = pushDelay - 10 //10분전에 알려줌
+                                )
+                                lectureTimetable.observeWorkCompletion(workerID.id, context)
+                            } else {
+                                notificationService.showBasicNotification("알림", "10분 이내에 수업이 시작 되어 입실 불가능 합니다.")
+                            }
                         },
                         nextLectureTime = nextLectureTime,
                         nextMyLectureTime = myNextLectureTime,
@@ -163,10 +167,14 @@ private fun RoomCard(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize().padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             Box(
-                modifier = Modifier.weight(1f).fillMaxSize(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
                 contentAlignment = Alignment.CenterStart,
             ){
                 if (state) {
@@ -178,7 +186,9 @@ private fun RoomCard(
                 }
             }
             Box(
-                modifier = Modifier.weight(1f).fillMaxSize(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ){
                 if (state) {
@@ -202,7 +212,9 @@ private fun RoomCard(
                 }
             }
             Box(
-                modifier = Modifier.weight(1f).fillMaxSize(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ){
                 if (state) {

@@ -20,10 +20,18 @@ class NotificationApplication : Application() {
             NotificationManager.IMPORTANCE_HIGH
         )
 
+        // 두 번째 채널 생성
+        val canNotWaitNotiChannel = NotificationChannel(
+            "can't_check_in",
+            "can't_check_in Channel",
+            NotificationManager.IMPORTANCE_HIGH
+        )
+
         notificationChannel.description = "A notification channel for water reminders"
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
+        notificationManager.createNotificationChannel(canNotWaitNotiChannel)
     }
 }
 
@@ -33,7 +41,7 @@ class NotificationService(
     private val notificationManager = context.getSystemService(NotificationManager::class.java)
 
     fun showBasicNotification(title: String, content: String) {
-        val notification = NotificationCompat.Builder(context, "checkIn_reminder")
+        val notification = NotificationCompat.Builder(context, "can't_check_in")
             .setContentTitle(title)
             .setContentText(content)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
