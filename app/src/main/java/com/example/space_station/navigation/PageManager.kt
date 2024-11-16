@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.FirstBaseline
+import com.example.space_station.ui.auth.LoginPage
 import com.example.space_station.ui.main.LoadingPage
 
 import com.example.space_station.ui.main.MainPage
@@ -25,17 +26,22 @@ fun PageManager(){
         })
     }else{
         isLoggedIn = if(firebaseModel.getCurrentUser()==null) false else true
+        if(!isLoggedIn){
+            LoginPage()
+        }else{
+            when(currentPage){
 
-        when(currentPage){
+                else -> MainPage(
+                    currentPage = currentPage,
+                    onClick = {x:Int->
+                        currentPage = x
+                    }
 
-            else -> MainPage(
-                currentPage = currentPage,
-                onClick = {x:Int->
-                    currentPage = x
-                }
-
-            )
+                )
+            }
         }
+
+
     }
 
 }
