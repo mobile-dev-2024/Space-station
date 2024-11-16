@@ -57,8 +57,11 @@ class LectureTimetable: ViewModel() {
     }
     fun CheckOutRoom(context: Context) {
         // 푸시 알림을 취소 함
-        explicitlyCancelled.value = true
-        WorkManager.getInstance(context).cancelWorkById(latestPushWorkId.value!!)
+        latestPushWorkId.value?.let {
+            explicitlyCancelled.value = true
+            WorkManager.getInstance(context).cancelWorkById(it)
+            latestPushWorkId.value = null
+        }
     }
     private fun checkOutRoom() {
         checkedInRooms.value = null
