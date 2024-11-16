@@ -83,7 +83,7 @@ fun Floors(
                     FloorCard(
                         floor = floor,
                         total = rooms.size,
-                        emptyCnt = rooms.size - (usedRooms[floor]?.size ?: 0),
+                        emptyCnt = rooms.size - (usedRooms[floor]?.distinctBy { it[12] }?.size ?: 0),
                         onClick = {
                             lectureTimetable.setSelectedFloor(floor, rooms, usedRooms[floor] ?: emptyList<List<String>>())
                             navigator()

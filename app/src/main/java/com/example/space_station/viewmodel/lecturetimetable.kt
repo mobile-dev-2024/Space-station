@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -11,6 +13,9 @@ import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
+import java.time.Duration
+
 
 class LectureTimetable: ViewModel() {
 
@@ -22,7 +27,6 @@ class LectureTimetable: ViewModel() {
 
     var selectedBuilding = mutableStateOf<String>("")
         private set
-
     fun setSelectedBuilding(building: String) {
         selectedBuilding.value = building
     }
@@ -33,12 +37,61 @@ class LectureTimetable: ViewModel() {
         private set
     var selectedFloorUsedRooms = mutableStateOf<List<List<String>>>(emptyList())
         private set
-
     fun setSelectedFloor(floor: String, rooms: List<Pair<String, String>>, usedRooms: List<List<String>>) {
         selectedFloor.value = floor
         selectedFloorRooms.value = rooms
         selectedFloorUsedRooms.value = usedRooms
     }
+
+    var checkedInRooms = mutableStateOf<CheckedInRoom?>(null)
+        private set
+    fun CheckInCheck(building: String, floor: String, room: String): Boolean {
+        val currentRoom = checkedInRooms.value
+        return (currentRoom?.building == building
+                && currentRoom.floor == floor &&
+                currentRoom.room == room)
+    }
+    fun CheckInRoom(building: String, floor: String, room: String, checkOutTime: String) {
+        checkedInRooms.value = CheckedInRoom(building, floor, room, checkOutTime)
+    }
+    fun CheckOutRoom(context: Context) {
+        // 푸시 알림을 취소 함
+        explicitlyCancelled.value = true
+        WorkManager.getInstance(context).cancelWorkById(latestPushWorkId.value!!)
+    }
+    private fun checkOutRoom() {
+        checkedInRooms.value = null
+    }
+    // 외부에서 전달받은 작업 ID로 작업 상태를 관찰
+    var latestPushWorkId = mutableStateOf<UUID?>(null)
+        private set
+    var explicitlyCancelled = mutableStateOf(false)
+        private set
+    fun observeWorkCompletion(workId: UUID, context: Context) {
+        latestPushWorkId.value = workId
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(workId).observeForever { workInfo ->
+            if (workInfo != null) {
+                when (workInfo.state) {
+                    WorkInfo.State.SUCCEEDED -> {
+                        // 성공적으로 완료된 경우
+                        checkOutRoom()
+                    }
+                    WorkInfo.State.CANCELLED -> {
+                        if (explicitlyCancelled.value) {
+                            // 명시적인 취소인 경우에만 체크아웃
+                            // 덮어씌워져서 취소 된 경우는 다른 룸으로 체크인한 경우이므로 체크아웃하지 않음
+                            checkOutRoom()
+                            explicitlyCancelled.value = false
+                        }
+                    }
+                    else -> {
+                        // 기타 상태 처리 가능
+                    }
+                }
+            }
+        }
+    }
+
 
     // 데이터를 비동기로 로드
     fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx") {
@@ -131,7 +184,7 @@ class LectureTimetable: ViewModel() {
         return currentDateTime.format(formatter)
     }
 
-    fun getNextLectureTime(buildings: String, floor: String, room: String, time: String, week: String): String {
+    fun getNextLectureTime(buildings: String, floor: String, room: String, time: String, week: String): String? {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val targetTime = LocalTime.parse(time, formatter)
 
@@ -147,8 +200,8 @@ class LectureTimetable: ViewModel() {
             LocalTime.parse(it[10].substringBefore("~"), formatter)
         }
 
-        // 다음 강의의 시작 시간을 반환 (HH:mm~HH:mm 형식에서 시작 시간만 반환)
-        return nextLecture?.get(10)?.substringBefore("~") ?: ""
+        // 다음 강의의 시작 시간을 반환 (HH:mm~HH:mm 형식에서 시작 시간만 반환 없으면 널 반환)
+        return nextLecture?.get(10)?.substringBefore("~")
     }
 
     private fun isTimeInRange(timeRange: String, targetTime: LocalTime, formatter: DateTimeFormatter): Boolean {
@@ -160,4 +213,24 @@ class LectureTimetable: ViewModel() {
         // 타겟 시간이 시작 시간과 종료 시간 사이에 있는지 확인
         return targetTime.isAfter(startTime) && targetTime.isBefore(endTime)
     }
+
+
+    fun getMinuteDifference(timeString: String): Long {
+        // "HH:mm" 형식의 문자열을 LocalTime 객체로 변환
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val inputTime = LocalTime.parse(timeString, formatter)
+
+        // 현재 시간을 LocalTime으로 가져옴
+        val now = LocalTime.now()
+
+        // inputTime - 현재 시간 차이를 분 단위로 계산
+        return Duration.between(now, inputTime).toMinutes()
+    }
 }
+
+data class CheckedInRoom(
+    val building: String,
+    val floor: String,
+    val room: String,
+    val checkOutTime: String,
+)
