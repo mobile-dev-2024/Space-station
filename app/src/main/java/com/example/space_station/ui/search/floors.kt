@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.space_station.viewmodel.LectureTimetable
+import org.apache.poi.hssf.usermodel.HeaderFooter.time
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +44,20 @@ fun Floors(
 ) {
     val building = lectureTimetable.selectedBuilding.value
     val allRooms = lectureTimetable.getAllRoomsByBuilding(building)
+        .toList()
+        .sortedBy {
+        val floor = it.first.trim() // "1층"에서 "1" 추출
+        when {
+            floor.startsWith("B") -> {
+                // 지하 층은 100 더해서 정렬 순서 조정
+                100 + floor.substring(1).toInt()
+            }
+            else -> {
+                // 일반 층은 숫자로 변환
+                floor.toInt()
+            }
+        }
+    }
     val usedRooms = lectureTimetable.getUsedRooms(
         building = building,
         week = lectureTimetable.getNowKoreanDayOfWeek(),
