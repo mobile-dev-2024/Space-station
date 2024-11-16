@@ -43,6 +43,7 @@ class LectureTimetable: ViewModel() {
         selectedFloorUsedRooms.value = usedRooms
     }
 
+    // 디비에 저장 해야 하는 변수값
     var checkedInRooms = mutableStateOf<CheckedInRoom?>(null)
         private set
     fun CheckInCheck(building: String, floor: String, room: String): Boolean {
@@ -62,7 +63,9 @@ class LectureTimetable: ViewModel() {
     private fun checkOutRoom() {
         checkedInRooms.value = null
     }
+
     // 외부에서 전달받은 작업 ID로 작업 상태를 관찰
+    // 디비에 저장 해야 하는 변수 값
     var latestPushWorkId = mutableStateOf<UUID?>(null)
         private set
     var explicitlyCancelled = mutableStateOf(false)
