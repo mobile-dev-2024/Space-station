@@ -253,7 +253,6 @@ class LectureTimetable: ViewModel() {
 
     fun addSubject(lecture: Lecture): Boolean {
         val newSubjects = lecture.toTimetableSubjects()
-
         // 모든 새로운 강의 시간에 대해 겹치는지 확인
         val isConflicting = newSubjects.any { newSubject ->
             _subjects.value.orEmpty().any { existingSubject ->
@@ -283,6 +282,30 @@ class LectureTimetable: ViewModel() {
             _subjects.value = _subjects.value?.filter { it.courseCode != subjectToRemove.courseCode }
         }
     }
+
+    fun getNextSubjectStartTime(): String? {
+        val currentDateTime = LocalDateTime.now()
+        val currentDay = getNowKoreanDayOfWeek()
+        val currentTime = LocalTime.of(currentDateTime.hour, currentDateTime.minute)
+
+        val todaySubjects = _subjects.value.orEmpty().filter { it.day == currentDay }
+
+        // 수업 시작 시간이 현재 시간보다 이후인 수업 찾기
+        val nextSubject = todaySubjects
+            .filter { subject ->
+                val subjectStartTime = LocalTime.of(subject.startHour, subject.startMinute)
+                subjectStartTime.isAfter(currentTime)
+            }
+            .minByOrNull { subject ->
+                // 가장 가까운 시작 시간을 찾기 위해 정렬 기준 설정
+                LocalTime.of(subject.startHour, subject.startMinute)
+            }
+
+        return nextSubject?.let {
+            "%02d:%02d".format(it.startHour, it.startMinute)
+        }
+    }
+
 
 }
 
