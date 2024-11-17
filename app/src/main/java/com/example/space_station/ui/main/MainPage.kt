@@ -8,11 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.ModifierLocalReadScope
 import com.example.space_station.ui.layout.BottomBarComponent
+import com.example.space_station.ui.layout.TopBarComponent
 
 @Composable
-fun MainPage(currentPage : Int, onClick: (x:Int)->Unit){
+fun MainPage(currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
+
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        topBar = {
+            TopBarComponent(
+                onSettingsClick = onSettingClick
+            )
+        },
         bottomBar =  {BottomBarComponent(
             currentPage = currentPage,
             onClick = onClick

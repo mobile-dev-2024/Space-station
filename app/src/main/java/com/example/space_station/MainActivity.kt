@@ -40,10 +40,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                SearchMain(
-                    lectureTimetable = lectureTimetableViewModel,
-                    notificationService = notificationService
-                )
+                PageManager()
+//                SearchMain(
+//                    lectureTimetable = lectureTimetableViewModel,
+//                    notificationService = notificationService
+//                )
 
             }
         }

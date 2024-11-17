@@ -80,4 +80,5 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha") //푸시서비스
     implementation ("androidx.work:work-runtime-ktx:2.10.0") //워커매니저
+    implementation(kotlin("script-runtime"))
 }
