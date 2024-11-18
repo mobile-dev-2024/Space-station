@@ -216,6 +216,7 @@ class LectureTimetable: ViewModel() {
                         lecture.buildingInfo.contains(query, ignoreCase = true) ||
                                 lecture.roomInfo.contains(query, ignoreCase = true)
                     }
+                    "코드번호" -> lecture.courseCode.contains(query, ignoreCase = true)
                     else -> false
                 }
             }
@@ -291,7 +292,6 @@ class LectureTimetable: ViewModel() {
 
         val todaySubjects = _subjects.value.orEmpty().filter { it.day == currentDay }
 
-        // 수업 시작 시간이 현재 시간보다 이후인 수업 찾기
         val nextSubject = todaySubjects
             .filter { subject ->
                 val subjectStartTime = LocalTime.of(subject.startHour, subject.startMinute)
@@ -321,9 +321,24 @@ class LectureTimetable: ViewModel() {
         }
     }
 
+    // db에 저장할 정보 return
     fun updateUserSubjectToDB() : List<String> {
         val subjectList = _subjects.value ?: return emptyList()
         return subjectList.map { it.courseCode }
+    }
+
+    // db에서 정보 받아서 사용자 시간표 로드
+    fun loadUserTimeTableFromDB(courseCodeList : List<String>) {
+        val updatedSubjects = mutableListOf<TimetableSubject>()
+
+        courseCodeList.forEach { courseCode ->
+            val lectures = getLecturesBySubject(courseCode, "코드번호")
+
+            lectures.forEach { lecture ->
+                updatedSubjects.addAll(lecture.toTimetableSubjects())
+            }
+        }
+        _subjects.value = updatedSubjects
     }
 
 }
