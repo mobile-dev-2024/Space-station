@@ -306,6 +306,19 @@ class LectureTimetable: ViewModel() {
         }
     }
 
+    fun getPresentSubject() : TimetableSubject? {
+        val currentDateTime = LocalDateTime.now()
+        val currentDay = getNowKoreanDayOfWeek()
+        val currentTime = LocalTime.of(currentDateTime.hour, currentDateTime.minute)
+
+        val todaySubjects = _subjects.value.orEmpty().filter { it.day == currentDay }
+
+        return todaySubjects.find { subject ->
+            val subjectStartTime = LocalTime.of(subject.startHour, subject.startMinute)
+            val subjectEndTime = LocalTime.of(subject.endHour, subject.endMinute)
+            currentTime.isAfter(subjectStartTime) && currentTime.isBefore(subjectEndTime)
+        }
+    }
 
 }
 
