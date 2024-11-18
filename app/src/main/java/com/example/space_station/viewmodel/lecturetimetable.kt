@@ -235,8 +235,8 @@ class LectureTimetable: ViewModel() {
 }
 
 data class CheckedInRoom(
-    val building: String,
-    val floor: String,
-    val room: String,
-    val checkOutTime: String,
+    val building: String ="",
+    val floor: String="",
+    val room: String="",
+    val checkOutTime: String="",
 )

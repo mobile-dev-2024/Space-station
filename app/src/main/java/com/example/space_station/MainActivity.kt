@@ -8,6 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.space_station.core.NotificationService
+import com.example.space_station.navigation.PageManager
+import com.example.space_station.ui.main.MainPage
+import com.example.space_station.ui.search.Buildings
 import com.example.space_station.ui.search.SearchMain
 import com.example.space_station.ui.theme.SpacestationTheme
 import com.example.space_station.viewmodel.LectureTimetable
@@ -37,10 +40,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                SearchMain(
-                    lectureTimetable = lectureTimetableViewModel,
-                    notificationService = notificationService
-                )
+                PageManager()
+//                SearchMain(
+//                    lectureTimetable = lectureTimetableViewModel,
+//                    notificationService = notificationService
+//                )
 
             }
         }
