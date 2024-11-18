@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -320,6 +321,11 @@ class LectureTimetable: ViewModel() {
         }
     }
 
+    fun updateUserSubjectToDB() : List<String> {
+        val subjectList = _subjects.value ?: return emptyList()
+        return subjectList.map { it.courseCode }
+    }
+
 }
 
 // 강의 정보를 나타내는 데이터 클래스
@@ -338,7 +344,7 @@ data class Schedule(
 )
 
 data class TimetableSubject(
-    val courseCode: String, //월 화 와 같이 한글자
+    val courseCode: String,
     val day: String, //월 화 와 같이 한글자
     val startHour: Int,
     val startMinute : Int,
