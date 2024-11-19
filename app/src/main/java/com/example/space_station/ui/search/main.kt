@@ -47,39 +47,5 @@ fun SearchMain(
                 backNavigator = { navController.navigateUp() }
             )
         }
-        composable(route = "timeTable") {
-            val subjects by lectureTimetable.subjects.observeAsState(emptyList())
-            TimetablePage(
-                subjects = subjects,
-                onAddButtonClicked = {
-                    navController.navigate(route = "addTimeTable")
-                },
-                onSettingClicked = {},
-                onRemoveSubject = { lectureTimetable.removeSubject(it) }
-            )
-        }
-        composable(
-            route = "addTimeTable",
-            enterTransition = {
-                slideInVertically(
-                    initialOffsetY = { it }
-                ) + fadeIn()
-            },
-            exitTransition = {
-                slideOutVertically(
-                    targetOffsetY = { it }
-                ) + fadeOut()
-            }
-        ) {
-            AddTimetablePage(
-                backNavigator = { navController.navigateUp() },
-                getLecturesBySubject = { query, searchType ->
-                    lectureTimetable.getLecturesBySubject(query, searchType)
-                },
-                addLectureToTimetable = { subject ->
-                    lectureTimetable.addSubject(subject)
-                }
-            )
-        }
     }
 }

@@ -13,6 +13,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.space_station.ui.theme.SpacestationTheme
 import com.example.space_station.viewmodel.LectureTimetable
 import com.example.space_station.ui.search.SearchMain
+import com.example.space_station.ui.search.TimeTableMain
+import com.example.space_station.viewmodel.TimeTableModel
 
 
 class MainActivity : ComponentActivity() {
@@ -22,11 +24,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             SpacestationTheme {
                 val lectureTimetableViewModel = viewModel<LectureTimetable>()
+                val timeTableViewModel = viewModel<TimeTableModel>()
                 lectureTimetableViewModel.loadExcelData(this)
-                lectureTimetableViewModel.loadExcelData2(this)
+                timeTableViewModel.loadExcelData(this)
+//                timeTableViewModel.loadUserTimeTableFromDB() // 안에 firebase에서 주는 coursecode List<String> 넣어야 함
 
-                SearchMain(
-                    lectureTimetable = lectureTimetableViewModel
+//                SearchMain(
+//                    lectureTimetable = lectureTimetableViewModel
+//                )
+                TimeTableMain(
+                    timeTableModel = timeTableViewModel
                 )
             }
         }
