@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.space_station.core.NotificationService
+import com.example.space_station.viewmodel.BookMarkModel
 
 import com.example.space_station.viewmodel.LectureTimetable
 
@@ -14,7 +15,8 @@ import com.example.space_station.viewmodel.LectureTimetable
 @Composable
 fun SearchMain(
     lectureTimetable: LectureTimetable,
-    notificationService: NotificationService
+    notificationService: NotificationService,
+    bookMarkModel: BookMarkModel,
 ) {
     val navController = rememberNavController()
 
@@ -25,7 +27,8 @@ fun SearchMain(
         composable(route = "buildings") {
             Buildings(
                 lectureTimetable = lectureTimetable,
-                navigator = { navController.navigate("floors") }
+                navigator = { navController.navigate("floors") },
+                bookMarkModel = bookMarkModel
             )
         }
         composable(route = "floors") {

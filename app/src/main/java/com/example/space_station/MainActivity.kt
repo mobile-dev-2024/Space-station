@@ -13,6 +13,7 @@ import com.example.space_station.ui.main.MainPage
 import com.example.space_station.ui.search.Buildings
 import com.example.space_station.ui.search.SearchMain
 import com.example.space_station.ui.theme.SpacestationTheme
+import com.example.space_station.viewmodel.BookMarkModel
 import com.example.space_station.viewmodel.LectureTimetable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -40,11 +41,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                PageManager()
-//                SearchMain(
-//                    lectureTimetable = lectureTimetableViewModel,
-//                    notificationService = notificationService
-//                )
+                val bookMarkModel = viewModel<BookMarkModel>()
+
+//                PageManager()
+                SearchMain(
+                    lectureTimetable = lectureTimetableViewModel,
+                    notificationService = notificationService,
+                    bookMarkModel = bookMarkModel
+                )
 
             }
         }
