@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,9 +17,13 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.space_station.ui.theme.CardColors
+import com.example.space_station.ui.theme.Primary
 import com.example.space_station.viewmodel.LectureTimetable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +43,12 @@ fun Buildings(
                         imageVector = Icons.Outlined.Settings,
                         contentDescription = "Settings",
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Primary,
+                    titleContentColor = Color.White,   // 제목 텍스트 색상
+                    actionIconContentColor = Color.White // 액션 아이콘 색상
+                ),
             )
         }
     ) { innerPadding ->
@@ -68,6 +78,9 @@ private fun BuildingCard(
         modifier = Modifier
             .fillMaxSize(),
         onClick = onClick,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = CardColors // 카드 컨테이너 색상
+        ),
     ) {
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
