@@ -101,7 +101,7 @@ class UserViewModel: ViewModel() {
         FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
     }
 
-    fun updateCheckInRoom(uuid: UUID?){
+    fun updateCheckInRoomPushID(uuid: UUID?){
         if(uuid != null){
             _userSettingData.update {
                 it.copy(

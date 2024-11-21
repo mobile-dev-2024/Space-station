@@ -1,12 +1,8 @@
 package com.example.space_station.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -42,6 +38,11 @@ class LectureTimetable: ViewModel() {
     var selectedFloorUsedRooms = mutableStateOf<List<List<String>>>(emptyList())
         private set
 
+    // userview 모델에 있는 함수를 이 안에서 호출 하려면 이 뷰모델 안에 유저뷰모델을 넣어야 하는데 이게 기술적으로 어려워서
+    // 함수를 받아서 여기에 업데이트 하고 이 함수를 호출 하는 형식으로 함
+    var updateFireBaseCheckInRoomFunc: (CheckedInRoom?) -> Unit = {}
+    var updateFireBaseLatestPushWorkIdFunc : (UUID?) -> Unit = {}
+
     fun setSelectedFloor(
         floor: String,
         rooms: List<Pair<String, String>>,
@@ -63,6 +64,7 @@ class LectureTimetable: ViewModel() {
     }
     fun CheckInRoom(building: String, floor: String, room: String, checkOutTime: String) {
         checkedInRooms.value = CheckedInRoom(building, floor, room, checkOutTime)
+        updateFireBaseCheckInRoomFunc(checkedInRooms.value)
     }
     fun CheckOutRoom(context: Context) {
         // 푸시 알림을 취소 함
@@ -74,6 +76,7 @@ class LectureTimetable: ViewModel() {
     }
     private fun checkOutRoom() {
         checkedInRooms.value = null
+        updateFireBaseCheckInRoomFunc(checkedInRooms.value)
     }
 
     // 외부에서 전달받은 작업 ID로 작업 상태를 관찰
@@ -84,6 +87,7 @@ class LectureTimetable: ViewModel() {
         private set
     fun observeWorkCompletion(workId: UUID, context: Context) {
         latestPushWorkId.value = workId
+        updateFireBaseLatestPushWorkIdFunc(latestPushWorkId.value)
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(workId).observeForever { workInfo ->
             if (workInfo != null) {
                 when (workInfo.state) {
@@ -91,6 +95,7 @@ class LectureTimetable: ViewModel() {
                         // 성공적으로 완료된 경우
                         checkOutRoom()
                         latestPushWorkId.value = null
+                        updateFireBaseLatestPushWorkIdFunc(latestPushWorkId.value)
                     }
                     WorkInfo.State.CANCELLED -> {
                         if (explicitlyCancelled.value) {
@@ -257,6 +262,13 @@ class LectureTimetable: ViewModel() {
 
         // inputTime - 현재 시간 차이를 분 단위로 계산
         return Duration.between(now, inputTime).toMinutes()
+    }
+
+    fun updateFirebaseDataToApp(checkedInRoom: CheckedInRoom, uuid: UUID?, roomFunc: (CheckedInRoom?) -> Unit, uuidFunc: (UUID?) -> Unit) {
+        checkedInRooms.value = checkedInRoom
+        latestPushWorkId.value = uuid
+        updateFireBaseCheckInRoomFunc = roomFunc
+        updateFireBaseLatestPushWorkIdFunc = uuidFunc
     }
 }
 

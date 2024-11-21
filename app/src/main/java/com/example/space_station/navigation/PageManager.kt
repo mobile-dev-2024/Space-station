@@ -73,6 +73,7 @@ fun PageManager(
             AuthenticationManager(
                 onLoginSuccess = { isLoggedIn = true },
                 userViewModel = userViewModel,
+                lectureTimetable = lectureTimetableViewModel
             )
         }
 
