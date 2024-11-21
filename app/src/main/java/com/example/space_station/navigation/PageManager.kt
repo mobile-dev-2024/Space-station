@@ -90,6 +90,7 @@ fun PageManager(
                     currentPage = currentPage,
                     onClick = {x:Int -> currentPage = x},
                     lectureTimetable = lectureTimetableViewModel,
+                    timeTableModel = timeTableViewModel,
                     notificationService = notificationService,
                     bookMarkModel = bookMarkModel,
                     onSettingClick = {

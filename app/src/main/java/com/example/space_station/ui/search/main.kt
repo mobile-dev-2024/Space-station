@@ -16,6 +16,7 @@ import com.example.space_station.core.NotificationService
 import com.example.space_station.viewmodel.BookMarkModel
 
 import com.example.space_station.viewmodel.LectureTimetable
+import com.example.space_station.viewmodel.TimeTableModel
 
 //서치페이지의 메인 페이지
 
@@ -24,6 +25,7 @@ fun SearchMain(
     currentPage:Int,
     onClick:(Int)->Unit,
     lectureTimetable: LectureTimetable,
+    timeTableModel: TimeTableModel,
     notificationService: NotificationService,
     bookMarkModel: BookMarkModel,
     onSettingClick:()->Unit,
@@ -54,6 +56,7 @@ fun SearchMain(
         composable(route = "rooms") {
             Rooms(
                 lectureTimetable = lectureTimetable,
+                timeTableModel = timeTableModel,
                 notificationService = notificationService,
                 backNavigator = { navController.navigateUp() }
             )

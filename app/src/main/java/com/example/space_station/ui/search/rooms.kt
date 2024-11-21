@@ -34,11 +34,13 @@ import com.example.space_station.core.scheduleNotification
 import com.example.space_station.ui.theme.CardColors
 import com.example.space_station.ui.theme.Primary
 import com.example.space_station.viewmodel.LectureTimetable
+import com.example.space_station.viewmodel.TimeTableModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Rooms(
     lectureTimetable: LectureTimetable,
+    timeTableModel: TimeTableModel,
     notificationService: NotificationService,
     backNavigator: () -> Unit = {},
 ) {
@@ -82,6 +84,8 @@ fun Rooms(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+            val myNextLectureTime: String? = timeTableModel.getNextSubjectStartTime()
+
             rooms.forEach { (floor, item) ->
                 val state = userRoomsByFloor.filter { it[12] == item }.isEmpty()
                 val professor = userRoomsByFloor.filter { it[12] == item }.map { it[6] }.firstOrNull() ?: ""
@@ -96,7 +100,6 @@ fun Rooms(
                         lectureTimetable.getNowKoreanTime(),
                         lectureTimetable.getNowKoreanDayOfWeek()
                     )
-                    val myNextLectureTime: String? = null// 내 다음 수업 시간 없으면 null
 
                     RoomCard(
                         room = item ,

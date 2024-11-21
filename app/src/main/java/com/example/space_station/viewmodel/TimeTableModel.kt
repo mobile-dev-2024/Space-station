@@ -160,6 +160,7 @@ class TimeTableModel: ViewModel() {
         }
     }
 
+    // 다음 수업 시작 시간을 반환
     fun getNextSubjectStartTime(): String? {
         val currentDateTime = LocalDateTime.now()
         val currentDay = getNowKoreanDayOfWeek()
