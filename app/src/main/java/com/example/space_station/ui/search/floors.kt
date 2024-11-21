@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,12 +28,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.space_station.ui.theme.CardColors
+import com.example.space_station.ui.theme.Primary
+import com.example.space_station.ui.theme.gaugeBaBackground
+import com.example.space_station.ui.theme.gaugeBarColor
 import com.example.space_station.viewmodel.LectureTimetable
+import org.apache.poi.hssf.usermodel.HeaderFooter.time
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +50,20 @@ fun Floors(
 ) {
     val building = lectureTimetable.selectedBuilding.value
     val allRooms = lectureTimetable.getAllRoomsByBuilding(building)
+        .toList()
+        .sortedBy {
+        val floor = it.first.trim() // "1층"에서 "1" 추출
+        when {
+            floor.startsWith("B") -> {
+                // 지하 층은 100 더해서 정렬 순서 조정
+                100 + floor.substring(1).toInt()
+            }
+            else -> {
+                // 일반 층은 숫자로 변환
+                floor.toInt()
+            }
+        }
+    }
     val usedRooms = lectureTimetable.getUsedRooms(
         building = building,
         week = lectureTimetable.getNowKoreanDayOfWeek(),
@@ -59,6 +80,7 @@ fun Floors(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
+                            tint = Color.White,
                         )
                     }
                 },
@@ -67,7 +89,12 @@ fun Floors(
                         imageVector = Icons.Outlined.Settings,
                         contentDescription = "Settings",
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Primary,
+                    titleContentColor = Color.White,   // 제목 텍스트 색상
+                    actionIconContentColor = Color.White // 액션 아이콘 색상
+                ),
             )
         }
     ) { innerPadding ->
@@ -107,6 +134,9 @@ fun FloorCard(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = onClick,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = CardColors // 카드 컨테이너 색상
+        ),
     ) {
         Row(
             modifier = Modifier
@@ -141,13 +171,13 @@ fun FloorCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp)
-                        .background(color = Color.LightGray, shape = RoundedCornerShape(4.dp))
+                        .background(color = gaugeBaBackground, shape = RoundedCornerShape(4.dp))
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(emptyCnt.toFloat()/total) // 사용량에 따라 크기를 조정
                             .fillMaxHeight()
-                            .background(color = Color.Gray, shape = RoundedCornerShape(4.dp))
+                            .background(color = gaugeBarColor, shape = RoundedCornerShape(4.dp))
                     )
                 }
             }

@@ -16,3 +16,6 @@ val LoadingScene2 = Color(0xFF333B97)
 
 val Primary = Color(0xFF1E1F2B)
 val Secondary = Color(0xFF3B3C47)
+val CardColors = Color(0xFF3A3A53)
+val gaugeBarColor = Color(0xFFD3DCF7)
+val gaugeBaBackground = Color(0xFF7C8291)
