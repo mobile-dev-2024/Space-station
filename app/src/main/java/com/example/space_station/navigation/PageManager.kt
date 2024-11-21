@@ -60,6 +60,8 @@ fun PageManager(
     val bookMarkModel = viewModel<BookMarkModel>()
 
     val navController = rememberNavController()
+    val user = FirebaseManager.instance.getCurrentUser()
+    isLoggedIn =  if(user!=null) true else false
 
 
     NavHost(navController = navController, startDestination = if (isLoading) "LoadingPage" else if (isLoggedIn) "MainPage" else "LoginPage") {
@@ -113,9 +115,11 @@ fun PageManager(
                 userViewModel = userViewModel,
                 onBackClick = { navController.navigateUp() },
                 onLogoutClick = {
-                    // 로그아웃 처리
+                    FirebaseManager.instance.signOut()
+                    isLoggedIn = false
                 },
                 onDeleteAccountClick = {
+                    FirebaseManager
                     // 계정 삭제 처리
                 }
             )
