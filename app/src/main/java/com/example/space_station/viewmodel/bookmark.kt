@@ -26,6 +26,15 @@ class BookMarkModel: ViewModel() {
 
     fun toggleBuildingBookMark(building: String) {
         buildingBookMarkList[building] = !buildingBookMarkList[building]!!
-        println(buildingBookMarkList)
+        updateFireBaseFunction(buildingBookMarkList)
+    }
+
+    var updateFireBaseFunction : (Map<String, Boolean>) -> Unit = {}
+
+    fun updateFirebaseDataToApp(bookMark: Map<String, Boolean>, updateFireBase: (Map<String, Boolean>) -> Unit) {
+        for (key in bookMark.keys) {
+            buildingBookMarkList[key] = bookMark[key]!!
+        }
+        updateFireBaseFunction = updateFireBase
     }
 }

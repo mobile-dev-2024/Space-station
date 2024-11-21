@@ -41,7 +41,9 @@ class LectureTimetable: ViewModel() {
     // userview 모델에 있는 함수를 이 안에서 호출 하려면 이 뷰모델 안에 유저뷰모델을 넣어야 하는데 이게 기술적으로 어려워서
     // 함수를 받아서 여기에 업데이트 하고 이 함수를 호출 하는 형식으로 함
     var updateFireBaseCheckInRoomFunc: (CheckedInRoom?) -> Unit = {}
+        private set
     var updateFireBaseLatestPushWorkIdFunc : (UUID?) -> Unit = {}
+        private set
 
     fun setSelectedFloor(
         floor: String,
