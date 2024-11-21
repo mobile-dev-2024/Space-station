@@ -90,6 +90,7 @@ class LectureTimetable: ViewModel() {
                     WorkInfo.State.SUCCEEDED -> {
                         // 성공적으로 완료된 경우
                         checkOutRoom()
+                        latestPushWorkId.value = null
                     }
                     WorkInfo.State.CANCELLED -> {
                         if (explicitlyCancelled.value) {
