@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.UUID
 
 class UserViewModel: ViewModel() {
     private var _userData = MutableStateFlow(UserData())
@@ -100,5 +101,22 @@ class UserViewModel: ViewModel() {
         FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
     }
 
+    fun updateCheckInRoom(uuid: UUID?){
+        if(uuid != null){
+            _userSettingData.update {
+                it.copy(
+                    uuid = uuid.toString()
+                )
+            }
+        }
+        else{
+            _userSettingData.update {
+                it.copy(
+                    uuid = ""
+                )
+            }
+        }
+        FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
+    }
 
 }

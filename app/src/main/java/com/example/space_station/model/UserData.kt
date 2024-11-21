@@ -12,7 +12,8 @@ data class UserSettingData(
     val pushAvailable : Boolean = true,
     val nickname : String = "익명의 유저",
     val room : CheckedInRoom = CheckedInRoom(),
-    var timetable : List<String> = emptyList(),
+    val timetable : List<String> = emptyList(),
+    val uuid :String = ""
 
-    )
+)
 

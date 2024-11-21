@@ -24,7 +24,7 @@ import com.example.space_station.ui.layout.TopBarComponent
 import com.example.space_station.viewmodel.TimeTableModel
 
 @Composable
-fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
+fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit) {
 
     Scaffold(
         topBar = {
@@ -33,12 +33,14 @@ fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)
                 onSettingsClick = onSettingClick
             )
         },
-        bottomBar =  {BottomBarComponent(
-            currentPage = currentPage,
-            onClick = onClick
-        )}
+        bottomBar = {
+            BottomBarComponent(
+                currentPage = currentPage,
+                onClick = onClick
+            )
+        }
 
-    ) {innerPadding->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -53,51 +55,67 @@ fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                 ),
 
-            ) {
+                ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     val timeTable = timeTableModel.getPresentSubject()
-                    if(timeTable != null){
+                    if (timeTable != null) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                "현재 강의실: ${timeTable.buildingInfo}관 ${timeTable.roomInfo}호",
+                                color = Color.White
+                            )
+                            Button(
+                                onClick = {
+                                    // 퇴실하기 동작 추가
+                                    println("퇴실하기 클릭됨")
+                                },
 
-                    }else{
-                        Text("공강시간입니다.", style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                            ) {
+                                Text("퇴실하기")
+                            }
+                        }
+                    } else {
+                        Text(
+                            "공강시간입니다.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.White
+                        )
                     }
 
-                    Text("현재 강의실: 310관 726호", color = Color.White)
-                    Button(
-                        onClick = { /* Leave room action */ },
-                        modifier = Modifier.align(Alignment.End)
-                    ) {
-                        Text("퇴실하기")
-                    }
+
                 }
+
+
             }
-            // Recommendation Cards
-            repeat(2) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    ),
+        }
+        // Recommendation Cards
+        repeat(2) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Text("강의실 추천", color = Color(0xFFB2FF59))
-                            Text("310관 729호", color = Color.White)
-                        }
-                        Button(onClick = { /* Enter room action */ }) {
-                            Text("입실하기")
-                        }
+                    Column {
+                        Text("강의실 추천", color = Color(0xFFB2FF59))
+                        Text("310관 729호", color = Color.White)
+                    }
+                    Button(onClick = { /* Enter room action */ }) {
+                        Text("입실하기")
                     }
                 }
             }
         }
+    }
 
-        }
+}
 
     
-}
