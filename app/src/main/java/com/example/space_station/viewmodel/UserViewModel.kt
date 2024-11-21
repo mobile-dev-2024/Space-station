@@ -25,11 +25,13 @@ class UserViewModel: ViewModel() {
         }
     }
 
+
+
     fun updateUserSettingData(userSettingData: UserSettingData){
         _userSettingData.update {
             it.copy(
                 bookmarks = userSettingData.bookmarks,
-                isPushAvailable = userSettingData.isPushAvailable,
+                pushAvailable = userSettingData.pushAvailable,
                 nickname = userSettingData.nickname,
                 room = userSettingData.room,
                 timetable = userSettingData.timetable
@@ -44,7 +46,7 @@ class UserViewModel: ViewModel() {
         _userSettingData.update {
             it.copy(
 
-                isPushAvailable = isPushAvailable,
+                pushAvailable = isPushAvailable,
 
             )
 
@@ -76,6 +78,7 @@ class UserViewModel: ViewModel() {
         }
         FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
     }
+
 
 
 }

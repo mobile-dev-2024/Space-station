@@ -99,7 +99,7 @@ fun SettingPage(
             ) {
                 Text(text = "푸시 알림 On/Off", color = Color.Gray)
                 Switch(
-                    checked = userSettingData.isPushAvailable,
+                    checked = userSettingData.pushAvailable,
                     onCheckedChange = { userViewModel.updatePushSetting(it) },
                     colors = SwitchDefaults.colors(checkedThumbColor = Color.Green)
                 )

@@ -8,11 +8,11 @@ data class UserData(
 }
 
 data class UserSettingData(
-    val bookmarks:List<Int> = emptyList(),
-    val isPushAvailable : Boolean = true,
+    val bookmarks:Map<String, Boolean> = emptyMap(),
+    val pushAvailable : Boolean = true,
     val nickname : String = "익명의 유저",
     val room : CheckedInRoom = CheckedInRoom(),
     var timetable : List<String> = emptyList(),
 
-)
+    )
 

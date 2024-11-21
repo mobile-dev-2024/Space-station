@@ -1,5 +1,6 @@
 package com.example.space_station.ui.timetable
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,11 +50,13 @@ import com.example.space_station.ui.theme.Purple40
 import com.example.space_station.ui.theme.Purple80
 import com.example.space_station.ui.theme.PurpleGrey80
 import com.example.space_station.viewmodel.TimetableSubject
+import com.example.space_station.viewmodel.UserViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetablePage(
+    userViewModel: UserViewModel,
     currentPage :Int,
     onClick:(Int)->Unit,
 
@@ -96,12 +99,16 @@ fun TimetablePage(
                             contentDescription = "Add timetable"
                         )
                     }
-                    Icon(
-                        modifier = Modifier.size(35.dp),
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings",
-                        tint = androidx.compose.ui.graphics.Color.White
-                    )
+                    IconButton(
+                        onClick = onSettingClicked,
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(35.dp),
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = androidx.compose.ui.graphics.Color.White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = BackgroundColor,
@@ -183,7 +190,8 @@ fun TimetablePage(
 
                         // 색상 지정 부분 수정
                         val color = currentSubject?.let { subject ->
-                            subjectColorMap[subject.name]
+                            subjectColorMap[
+                                subject.name]
                         } ?: Color.Transparent
 
                         Box(
@@ -258,6 +266,9 @@ fun TimetablePage(
                                 selectedSubject?.let { onRemoveSubject(it) }
                                 selectedSubject = null
                                 showBottomSheet = false
+                                Log.d("TimeTableManager",subjects.map{it.courseCode}.toString())
+                                userViewModel.updateTimeTable(subjects.map{it.courseCode})
+
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                         ) {

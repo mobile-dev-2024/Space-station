@@ -216,6 +216,8 @@ class TimeTableModel: ViewModel() {
         _subjects.value = updatedSubjects
     }
 
+
+
 }
 
 // 강의 정보를 나타내는 데이터 클래스

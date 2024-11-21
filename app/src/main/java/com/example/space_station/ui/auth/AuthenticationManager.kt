@@ -1,5 +1,6 @@
 package com.example.space_station.ui.auth
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ fun AuthenticationManager(
                         FirebaseManager.instance.getUserSettingData(
                             uid = it,
                             onSuccess = {
+                                Log.d("LoginCheck",it.toString())
                                 userViewModel.updateUserSettingData(it)
                             },
                             onError = {}

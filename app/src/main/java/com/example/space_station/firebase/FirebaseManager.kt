@@ -6,6 +6,7 @@ import com.example.space_station.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FirebaseManager(
@@ -31,6 +32,37 @@ class FirebaseManager(
                 }
             }
     }
+//    fun getUserSettingData(
+//        uid: String,
+//        onSuccess: (UserSettingData) -> Unit,
+//        onError: () -> Unit
+//    ) {
+//        // Firestore에서 'users' 컬렉션의 해당 UID 문서를 가져옴
+//        _db.collection("users")
+//            .document(uid)  // 'uid'에 해당하는 문서 가져오기
+//            .get()  // 문서 가져오기
+//            .addOnSuccessListener { documentSnapshot ->
+//                if (documentSnapshot.exists()) {  // 문서가 존재하면
+//                    val userSettingData = documentSnapshot.toObject(UserSettingData::class.java)
+//                    // 문서를 UserSettingData 객체로 변환
+//                    if (userSettingData != null) {
+//                        // 데이터가 정상적으로 변환되었으면 onSuccess 콜백 실행
+//                        onSuccess(userSettingData)
+//                    } else {
+//                        // 데이터가 null이면 onError 콜백 실행
+//                        onError()
+//                    }
+//                } else {
+//                    // 문서가 존재하지 않으면 onError 콜백 실행
+//                    onError()
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                // Firestore 호출 실패 시 onError 콜백 실행
+//                onError()
+//            }
+//    }
+
 
     fun createUser(email: String, password: String,onSuccess:(uid:String)->Unit,onError:()->Unit) {
         _auth.createUserWithEmailAndPassword(email, password)
@@ -76,8 +108,10 @@ class FirebaseManager(
             .document(uid)
             .get()
             .addOnSuccessListener { documentSnapshot ->
+                Log.d("Data Load", documentSnapshot.getData().toString())
                 if (documentSnapshot.exists()) {
                     val userSettingData = documentSnapshot.toObject(UserSettingData::class.java)
+                    Log.d("Data Load", userSettingData.toString())
                     if (userSettingData != null) {
                         onSuccess(userSettingData)
                     } else {
@@ -91,6 +125,7 @@ class FirebaseManager(
                 onError(exception)
             }
     }
+
 
     fun checkLogin(){
 

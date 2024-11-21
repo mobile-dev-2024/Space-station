@@ -79,6 +79,7 @@ fun PageManager(
         composable("MainPage") {
             when(currentPage){
                 0-> MainPage(
+                    timeTableViewModel = 
                     currentPage = currentPage,
                     onClick = { x: Int -> currentPage = x },
                     onSettingClick = {
@@ -96,6 +97,7 @@ fun PageManager(
                     }
                 )
                 2-> TimeTableMain(
+                    userViewModel = userViewModel,
                     currentPage = currentPage,
                     onClick = {currentPage = it},
                     onSettingClick = {
