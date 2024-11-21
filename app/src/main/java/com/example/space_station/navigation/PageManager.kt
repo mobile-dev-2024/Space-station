@@ -29,6 +29,7 @@ fun PageManager() {
 
     val navController = rememberNavController()
 
+
     NavHost(navController = navController, startDestination = if (isLoading) "LoadingPage" else if (isLoggedIn) "MainPage" else "LoginPage") {
         composable("LoadingPage") {
             LoadingPage(onClick = {

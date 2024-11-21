@@ -5,16 +5,19 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
@@ -29,8 +32,16 @@ import com.example.space_station.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingPage(userViewModel: UserViewModel, onBackClick: () -> Unit, onLogoutClick: () -> Unit, onDeleteAccountClick: () -> Unit) {
+fun SettingPage(
+    userViewModel: UserViewModel,
+    onBackClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+    onDeleteAccountClick: () -> Unit
+) {
+    val userSettingData by userViewModel.userSettingData.collectAsState()
     var isPushNotificationEnabled by remember { mutableStateOf(true) }
+    var showNicknameDialog by remember { mutableStateOf(false) }
+    var nickname by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -39,11 +50,6 @@ fun SettingPage(userViewModel: UserViewModel, onBackClick: () -> Unit, onLogoutC
                 navigationIcon = {
                     IconButton(onClick = { onBackClick() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* 설정 아이콘 동작 추가 */ }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -61,7 +67,6 @@ fun SettingPage(userViewModel: UserViewModel, onBackClick: () -> Unit, onLogoutC
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            // 계정 섹션
             Text(
                 text = "계정",
                 fontSize = 18.sp,
@@ -72,7 +77,7 @@ fun SettingPage(userViewModel: UserViewModel, onBackClick: () -> Unit, onLogoutC
                 text = "닉네임 변경",
                 modifier = Modifier
                     .padding(vertical = 4.dp)
-                    .clickable { /* 닉네임 변경 동작 추가 */ },
+                    .clickable { showNicknameDialog = true },
                 style = LocalTextStyle.current.copy(color = Color.Gray)
             )
 
@@ -94,17 +99,14 @@ fun SettingPage(userViewModel: UserViewModel, onBackClick: () -> Unit, onLogoutC
             ) {
                 Text(text = "푸시 알림 On/Off", color = Color.Gray)
                 Switch(
-                    checked = isPushNotificationEnabled,
-                    onCheckedChange = { isPushNotificationEnabled = it
-                        userViewModel.updatePushSetting(it)
-                                      },
+                    checked = userSettingData.isPushAvailable,
+                    onCheckedChange = { userViewModel.updatePushSetting(it) },
                     colors = SwitchDefaults.colors(checkedThumbColor = Color.Green)
                 )
             }
 
             Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 16.dp))
 
-            // 계정 섹션 (Logout and Delete account)
             Text(
                 text = "계정",
                 fontSize = 18.sp,
@@ -124,6 +126,45 @@ fun SettingPage(userViewModel: UserViewModel, onBackClick: () -> Unit, onLogoutC
                     .padding(vertical = 4.dp)
                     .clickable { onDeleteAccountClick() },
                 style = LocalTextStyle.current.copy(color = Color.Red)
+            )
+        }
+
+        // 닉네임 변경 팝업
+        if (showNicknameDialog) {
+            AlertDialog(
+                onDismissRequest = { showNicknameDialog = false },
+                title = {
+                    Text(text = "닉네임 변경", fontSize = 20.sp)
+                },
+                text = {
+                    Column {
+                        Text(
+                            text = "새로운 닉네임을 입력하세요.",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        OutlinedTextField(
+                            value = userSettingData.nickname,
+                            onValueChange = { userViewModel.updateNickname(it) },
+                            label = { Text("닉네임") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        userViewModel.updateNickname(userSettingData.nickname)
+                        showNicknameDialog = false
+                    }) {
+                        Text("저장")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showNicknameDialog = false }) {
+                        Text("취소")
+                    }
+                }
             )
         }
     }

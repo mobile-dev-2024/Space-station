@@ -52,5 +52,30 @@ class UserViewModel: ViewModel() {
         FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
     }
 
+    fun updateNickname(nickname :String){
+        _userSettingData.update {
+            it.copy(
+
+                nickname = nickname,
+
+                )
+
+        }
+        FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
+
+    }
+
+    fun updateTimeTable(timetable : List<String>){
+        _userSettingData.update {
+            it.copy(
+
+                timetable = timetable
+
+                )
+
+        }
+        FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
+    }
+
 
 }

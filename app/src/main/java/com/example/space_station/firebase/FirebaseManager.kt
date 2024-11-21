@@ -77,7 +77,6 @@ class FirebaseManager(
             .get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
-                    // Document를 UserSettingData 객체로 변환
                     val userSettingData = documentSnapshot.toObject(UserSettingData::class.java)
                     if (userSettingData != null) {
                         onSuccess(userSettingData)
@@ -91,6 +90,10 @@ class FirebaseManager(
             .addOnFailureListener { exception ->
                 onError(exception)
             }
+    }
+
+    fun checkLogin(){
+
     }
 
 
