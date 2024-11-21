@@ -90,10 +90,10 @@ class UserViewModel: ViewModel() {
         FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
     }
 
-    fun updateCheckInRoom(checkedInRoom: CheckedInRoom){
+    fun updateCheckInRoom(checkedInRoom: CheckedInRoom?){
         _userSettingData.update {
             it.copy(
-                room = checkedInRoom
+                room = if(checkedInRoom!=null)checkedInRoom else CheckedInRoom()
             )
         }
 
