@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidthIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -24,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.example.space_station.ui.theme.MainContainerColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,25 +43,25 @@ fun TopBarComponent(
     onSettingsClick: () -> Unit // 환경설정 버튼 클릭 이벤트
 ) {
     TopAppBar(
-
+        modifier = Modifier.fillMaxWidth(),
 
         title = {
             Text(
                 text = title,
-                style = TextStyle(
-                    color = androidx.compose.ui.graphics.Color.White
 
-                )
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer // 배경 색상
+            containerColor = MaterialTheme.colorScheme.primaryContainer, // 배경 색상
+            titleContentColor = androidx.compose.ui.graphics.Color.White
+
         ),
 
 
         actions = {
             IconButton(onClick = onSettingsClick) {
                 Icon(
+                    modifier = Modifier.size(35.dp),
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
                     tint = androidx.compose.ui.graphics.Color.White

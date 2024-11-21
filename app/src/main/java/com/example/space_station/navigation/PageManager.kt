@@ -23,6 +23,7 @@ import com.example.space_station.ui.main.LoadingPage
 
 import com.example.space_station.ui.main.MainPage
 import com.example.space_station.ui.search.SearchMain
+import com.example.space_station.ui.search.TimeTableMain
 import com.example.space_station.viewmodel.BookMarkModel
 import com.example.space_station.viewmodel.LectureTimetable
 import com.example.space_station.viewmodel.TimeTableModel
@@ -93,6 +94,14 @@ fun PageManager(
                     onSettingClick = {
                         navController.navigate("SettingPage")
                     }
+                )
+                2-> TimeTableMain(
+                    currentPage = currentPage,
+                    onClick = {currentPage = it},
+                    onSettingClick = {
+                        navController.navigate("SettingPage")
+                    },
+                    timeTableModel = timeTableViewModel
                 )
             }
         }

@@ -19,6 +19,9 @@ import com.example.space_station.viewmodel.TimeTableModel
 
 @Composable
 fun TimeTableMain(
+    currentPage :Int,
+    onClick:(Int)->Unit,
+    onSettingClick:()->Unit,
     timeTableModel: TimeTableModel,
 ) {
 
@@ -31,11 +34,13 @@ fun TimeTableMain(
         composable(route = "timeTable") {
             val subjects by timeTableModel.subjects.observeAsState(emptyList())
             TimetablePage(
+                currentPage = currentPage,
+                onClick = onClick,
                 subjects = subjects,
                 onAddButtonClicked = {
                     navController.navigate(route = "addTimeTable")
                 },
-                onSettingClicked = {},
+                onSettingClicked = onSettingClick,
                 onRemoveSubject = { timeTableModel.removeSubject(it) }
             )
         }

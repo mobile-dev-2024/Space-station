@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AddBox
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.space_station.ui.layout.BottomBarComponent
 import com.example.space_station.ui.theme.BackgroundColor
 import com.example.space_station.ui.theme.Pink80
 import com.example.space_station.ui.theme.Purple40
@@ -52,6 +54,9 @@ import com.example.space_station.viewmodel.TimetableSubject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetablePage(
+    currentPage :Int,
+    onClick:(Int)->Unit,
+
     subjects: List<TimetableSubject>,
     onAddButtonClicked: () -> Unit,
     onSettingClicked: () -> Unit,
@@ -91,21 +96,26 @@ fun TimetablePage(
                             contentDescription = "Add timetable"
                         )
                     }
-                    IconButton(onClick = onSettingClicked) {
-                        Icon(
-                            modifier = Modifier.size(35.dp),
-                            tint = Color.White,
-                            imageVector = Icons.Outlined.Settings,
-                            contentDescription = "Setting"
-                        )
-                    }
+                    Icon(
+                        modifier = Modifier.size(35.dp),
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings",
+                        tint = androidx.compose.ui.graphics.Color.White
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = BackgroundColor,
                     titleContentColor = Color.White,
                 ),
             )
+        },
+        bottomBar = {
+            BottomBarComponent(
+                currentPage =currentPage,
+                onClick = onClick
+            )
         }
+
     ) { innerScaffoldPadding ->
         val endTime = 18
         val times = (8..endTime).flatMap { hour ->
