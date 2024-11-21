@@ -36,30 +36,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             SpacestationTheme {
                 // 강의 시간표 데이터 로드
-                val lectureTimetableViewModel = viewModel<LectureTimetable>()
-                val timeTableViewModel = viewModel<TimeTableModel>()
-                lectureTimetableViewModel.loadExcelData(this)
-                timeTableViewModel.loadExcelData(this)
-//                timeTableViewModel.loadUserTimeTableFromDB() // 안에 firebase에서 주는 coursecode List<String> 넣어야 함
 
-                // 알림 권한 요청
-                val postNotificationPermission =
-                    rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                val notificationService = NotificationService(this)
-                LaunchedEffect(key1 = true) {
-                    if (!postNotificationPermission.status.isGranted) {
-                        postNotificationPermission.launchPermissionRequest()
-                    }
-                }
 
                 val bookMarkModel = viewModel<BookMarkModel>()
 
-//                PageManager()
-                SearchMain(
-                    lectureTimetable = lectureTimetableViewModel,
-                    notificationService = notificationService,
-                    bookMarkModel = bookMarkModel
-                )
+                PageManager(this)
+//
 
             }
         }

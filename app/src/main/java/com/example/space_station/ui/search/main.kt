@@ -21,21 +21,27 @@ import com.example.space_station.viewmodel.LectureTimetable
 
 @Composable
 fun SearchMain(
+    currentPage:Int,
+    onClick:(Int)->Unit,
     lectureTimetable: LectureTimetable,
     notificationService: NotificationService,
     bookMarkModel: BookMarkModel,
+    onSettingClick:()->Unit,
 ) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = "timeTable"
+        startDestination = "buildings"
     ) {
         composable(route = "buildings") {
             Buildings(
+                currentPage = currentPage,
+                onClick = onClick,
                 lectureTimetable = lectureTimetable,
                 navigator = { navController.navigate("floors") },
-                bookMarkModel = bookMarkModel
+                bookMarkModel = bookMarkModel,
+                onSettingClick = onSettingClick
             )
         }
         composable(route = "floors") {

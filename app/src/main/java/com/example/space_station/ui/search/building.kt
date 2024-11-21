@@ -32,10 +32,15 @@ import com.example.space_station.ui.theme.Primary
 import com.example.space_station.viewmodel.BookMarkModel
 import com.example.space_station.viewmodel.LectureTimetable
 import com.example.space_station.R
+import com.example.space_station.ui.layout.BottomBarComponent
+import com.example.space_station.ui.layout.TopBarComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Buildings(
+    currentPage:Int,
+    onClick: (Int)->Unit,
+    onSettingClick:()->Unit,
     lectureTimetable: LectureTimetable,
     modifier: Modifier = Modifier,
     navigator: () -> Unit = {},
@@ -44,21 +49,32 @@ fun Buildings(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text("빈 강의실 찾기") },
-                actions = {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings",
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Primary,
-                    titleContentColor = Color.White,   // 제목 텍스트 색상
-                    actionIconContentColor = Color.White // 액션 아이콘 색상
-                ),
+            TopBarComponent(
+                title = "빈 강의실 찾기",
+                onSettingsClick = onSettingClick
             )
+//            TopAppBar(
+//                title = { Text("빈 강의실 찾기") },
+//                actions = {
+//                    Icon(
+//                        imageVector = Icons.Outlined.Settings,
+//                        contentDescription = "Settings",
+//                    )
+//                },
+//                colors = TopAppBarDefaults.topAppBarColors(
+//                    containerColor = Primary,
+//                    titleContentColor = Color.White,   // 제목 텍스트 색상
+//                    actionIconContentColor = Color.White // 액션 아이콘 색상
+//                ),
+//            )
+        },
+        bottomBar =  {
+            BottomBarComponent(
+            currentPage = currentPage,
+            onClick = onClick
+        )
         }
+
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier

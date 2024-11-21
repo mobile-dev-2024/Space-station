@@ -28,6 +28,7 @@ fun MainPage(currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
     Scaffold(
         topBar = {
             TopBarComponent(
+                title = "우주 정거장",
                 onSettingsClick = onSettingClick
             )
         },
@@ -41,7 +42,7 @@ fun MainPage(currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.DarkGray)
+
         ) {
             Card(
                 modifier = Modifier

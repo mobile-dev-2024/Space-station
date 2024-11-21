@@ -211,7 +211,7 @@ class LectureTimetable: ViewModel() {
         room: String,
         time: String,
         week: String
-    ): String {
+    ): String? {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val targetTime = LocalTime.parse(time, formatter)
 
@@ -244,6 +244,20 @@ class LectureTimetable: ViewModel() {
         // 타겟 시간이 시작 시간과 종료 시간 사이에 있는지 확인
         return targetTime.isAfter(startTime) && targetTime.isBefore(endTime)
     }
+
+
+    fun getMinuteDifference(timeString: String): Long {
+        // "HH:mm" 형식의 문자열을 LocalTime 객체로 변환
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val inputTime = LocalTime.parse(timeString, formatter)
+
+        // 현재 시간을 LocalTime으로 가져옴
+        val now = LocalTime.now()
+
+        // inputTime - 현재 시간 차이를 분 단위로 계산
+        return Duration.between(now, inputTime).toMinutes()
+    }
+
 
 //    // 여기부터 시간표 부분을 위한 코드
 //    private val _subjects = MutableLiveData<List<TimetableSubject>>()
@@ -402,3 +416,10 @@ class LectureTimetable: ViewModel() {
 //    }
 
 }
+
+data class CheckedInRoom(
+    val building: String ="",
+    val floor: String="",
+    val room: String="",
+    val checkOutTime: String="",
+)

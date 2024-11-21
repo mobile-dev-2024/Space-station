@@ -30,18 +30,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarComponent(
+    title : String,
     onSettingsClick: () -> Unit // 환경설정 버튼 클릭 이벤트
 ) {
     TopAppBar(
 
 
         title = {
+            Text(
+                text = title,
+                style = TextStyle(
+                    color = androidx.compose.ui.graphics.Color.White
 
+                )
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer // 배경 색상
