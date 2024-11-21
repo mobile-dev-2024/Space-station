@@ -79,6 +79,17 @@ class UserViewModel: ViewModel() {
         FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
     }
 
+    fun updateBookmark(bookmarks:Map<String,Boolean>){
+
+        _userSettingData.update {
+            it.copy(
+                bookmarks = bookmarks
+            )
+        }
+
+        FirebaseManager.instance.updateUserSettingData(_userData.value.uid,_userSettingData.value)
+    }
+
     fun updateCheckInRoom(checkedInRoom: CheckedInRoom){
         _userSettingData.update {
             it.copy(
