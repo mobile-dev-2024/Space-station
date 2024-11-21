@@ -19,3 +19,8 @@ val Secondary = Color(0xFF3B3C47)
 val CardColors = Color(0xFF3A3A53)
 val gaugeBarColor = Color(0xFFD3DCF7)
 val gaugeBaBackground = Color(0xFF7C8291)
+
+
+val BackgroundColor = Color(0xFF1E1F2B)
+val MainContainerColor = Color(0xFF393A54)
+val BottomBarBackgroundColor = Color(0xFF3B3C46)
