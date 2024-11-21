@@ -35,14 +35,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SpacestationTheme {
-                // 강의 시간표 데이터 로드
-
-
-                val bookMarkModel = viewModel<BookMarkModel>()
-
                 PageManager(this)
-//
-
             }
         }
     }
