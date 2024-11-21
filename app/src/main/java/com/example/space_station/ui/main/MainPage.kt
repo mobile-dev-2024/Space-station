@@ -21,9 +21,10 @@ import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.unit.dp
 import com.example.space_station.ui.layout.BottomBarComponent
 import com.example.space_station.ui.layout.TopBarComponent
+import com.example.space_station.viewmodel.TimeTableModel
 
 @Composable
-fun MainPage(currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
+fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
 
     Scaffold(
         topBar = {
@@ -54,7 +55,13 @@ fun MainPage(currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit){
 
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("공강시간입니다.", style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                    val timeTable = timeTableModel.getPresentSubject()
+                    if(timeTable != null){
+
+                    }else{
+                        Text("공강시간입니다.", style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                    }
+
                     Text("현재 강의실: 310관 726호", color = Color.White)
                     Button(
                         onClick = { /* Leave room action */ },
