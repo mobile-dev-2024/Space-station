@@ -133,5 +133,16 @@ class FirebaseManager(
     }
 
 
+    fun signOut(){
+        _auth.signOut()
+    }
+
+    fun deleteUser(uid:String){
+        val user = FirebaseAuth.getInstance().currentUser
+    }
+
+
+
+
 
 }
