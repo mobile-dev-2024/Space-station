@@ -40,22 +40,23 @@ fun AuthenticationManager(
                             onSuccess = {
                                 Log.d("LoginCheck",it.toString())
                                 userViewModel.updateUserSettingData(it)
+
+                                //로그인 하고 세팅데이터 불러 오면 렉쳐테이블 뷰모델에 데이터 업로드 함
+                                val uuid = userViewModel.userSettingData.value.uuid
+                                lectureTimetable.updateFirebaseDataToApp(
+                                    checkedInRoom = userViewModel.userSettingData.value.room,
+                                    uuid = if (uuid != "") {UUID.fromString(uuid)} else {null},
+                                    //뷰모델 안의 함수를 다른 뷰모델 안에서 호출하기 어렵기 때문에 여기서 함수를 넘겨줌
+                                    roomFunc = { userViewModel.updateCheckInRoom(it) },
+                                    uuidFunc = { userViewModel.updateCheckInRoomPushID(it) }
+                                )
+                                // 북마크 모델에 데이터 업로드 함
+                                bookMarkModel.updateFirebaseDataToApp(
+                                    bookMark = userViewModel.userSettingData.value.bookmarks,
+                                    updateFireBase = { userViewModel.updateBookmark(it) }
+                                )
                             },
                             onError = {}
-                        )
-                        //로그인 하고 세팅데이터 불러 오면 렉쳐테이블 뷰모델에 데이터 업로드 함
-                        val uuid = userViewModel.userSettingData.value.uuid
-                        lectureTimetable.updateFirebaseDataToApp(
-                            checkedInRoom = userViewModel.userSettingData.value.room,
-                            uuid = if (uuid != "") {UUID.fromString(uuid)} else {null},
-                            //뷰모델 안의 함수를 다른 뷰모델 안에서 호출하기 어렵기 때문에 여기서 함수를 넘겨줌
-                            roomFunc = { userViewModel.updateCheckInRoom(it) },
-                            uuidFunc = { userViewModel.updateCheckInRoomPushID(it) }
-                        )
-                        // 북마크 모델에 데이터 업로드 함
-                        bookMarkModel.updateFirebaseDataToApp(
-                            bookMark = userViewModel.userSettingData.value.bookmarks,
-                            updateFireBase = { userViewModel.updateBookmark(it) }
                         )
                         onLoginSuccess()
                     }
