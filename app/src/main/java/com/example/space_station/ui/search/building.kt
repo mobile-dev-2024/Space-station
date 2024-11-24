@@ -42,7 +42,6 @@ fun Buildings(
     onClick: (Int)->Unit,
     onSettingClick:()->Unit,
     lectureTimetable: LectureTimetable,
-    modifier: Modifier = Modifier,
     navigator: () -> Unit = {},
     bookMarkModel: BookMarkModel,
 ) {
