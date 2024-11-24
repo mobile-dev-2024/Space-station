@@ -43,14 +43,15 @@ fun SearchMain(
                 lectureTimetable = lectureTimetable,
                 navigator = { navController.navigate("floors") },
                 bookMarkModel = bookMarkModel,
-                onSettingClick = onSettingClick
+                onSettingClick = onSettingClick,
             )
         }
         composable(route = "floors") {
             Floors(
                 lectureTimetable = lectureTimetable,
                 backNavigator = { navController.navigateUp() },
-                navigator = { navController.navigate("rooms") }
+                navigator = { navController.navigate("rooms") },
+                onSettingClick = onSettingClick,
             )
         }
         composable(route = "rooms") {
@@ -58,7 +59,8 @@ fun SearchMain(
                 lectureTimetable = lectureTimetable,
                 timeTableModel = timeTableModel,
                 notificationService = notificationService,
-                backNavigator = { navController.navigateUp() }
+                backNavigator = { navController.navigateUp() },
+                onSettingClick = onSettingClick,
             )
         }
     }

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
@@ -43,6 +45,7 @@ fun Rooms(
     timeTableModel: TimeTableModel,
     notificationService: NotificationService,
     backNavigator: () -> Unit = {},
+    onSettingClick: () -> Unit,
 ) {
     val building = lectureTimetable.selectedBuilding.value
     val floor = lectureTimetable.selectedFloor.value
@@ -64,10 +67,14 @@ fun Rooms(
                     }
                 },
                 actions = {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings",
-                    )
+                    IconButton(onClick = onSettingClick) {
+                        Icon(
+                            modifier = Modifier.size(35.dp),
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = androidx.compose.ui.graphics.Color.White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Primary,

@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -47,6 +48,7 @@ fun Floors(
     lectureTimetable: LectureTimetable,
     backNavigator: () -> Unit = {},
     navigator: () -> Unit = {},
+    onSettingClick:()->Unit,
 ) {
     val building = lectureTimetable.selectedBuilding.value
     val allRooms = lectureTimetable.getAllRoomsByBuilding(building)
@@ -85,10 +87,14 @@ fun Floors(
                     }
                 },
                 actions = {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings",
-                    )
+                    IconButton(onClick = onSettingClick) {
+                        Icon(
+                            modifier = Modifier.size(35.dp),
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = androidx.compose.ui.graphics.Color.White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Primary,
