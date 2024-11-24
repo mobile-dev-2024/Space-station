@@ -52,20 +52,6 @@ fun Buildings(
                 title = "빈 강의실 찾기",
                 onSettingsClick = onSettingClick
             )
-//            TopAppBar(
-//                title = { Text("빈 강의실 찾기") },
-//                actions = {
-//                    Icon(
-//                        imageVector = Icons.Outlined.Settings,
-//                        contentDescription = "Settings",
-//                    )
-//                },
-//                colors = TopAppBarDefaults.topAppBarColors(
-//                    containerColor = Primary,
-//                    titleContentColor = Color.White,   // 제목 텍스트 색상
-//                    actionIconContentColor = Color.White // 액션 아이콘 색상
-//                ),
-//            )
         },
         bottomBar =  {
             BottomBarComponent(
@@ -135,13 +121,13 @@ private fun BuildingCard(
                 .fillMaxSize()
         ){
             Box(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(16.dp),
             ) {
                 Text(buildingName, style = typography.titleLarge)
             }
 
             Box(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(16.dp),
             ){
                 IconButton(
                     onClick = bookMarkToggle,
