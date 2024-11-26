@@ -31,6 +31,7 @@ class UserViewModel: ViewModel() {
     fun updateUserSettingData(userSettingData: UserSettingData){
         _userSettingData.update {
             it.copy(
+
                 bookmarks = userSettingData.bookmarks,
                 pushAvailable = userSettingData.pushAvailable,
                 nickname = userSettingData.nickname,

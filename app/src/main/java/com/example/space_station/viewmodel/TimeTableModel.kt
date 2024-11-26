@@ -189,6 +189,7 @@ class TimeTableModel: ViewModel() {
         val currentTime = LocalTime.of(currentDateTime.hour, currentDateTime.minute)
 
         val todaySubjects = _subjects.value.orEmpty().filter { it.day == currentDay }
+        Log.d("today Subject", todaySubjects.toString())
 
         return todaySubjects.find { subject ->
             val subjectStartTime = LocalTime.of(subject.startHour, subject.startMinute)
