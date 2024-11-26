@@ -153,7 +153,8 @@ fun TimetablePage(
                         color = Color.White,
                         modifier = Modifier
                             .width(77.dp)
-                            .padding(bottom = 4.dp),
+                            .padding(bottom = 4.dp)
+                            .weight(1f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -197,7 +198,8 @@ fun TimetablePage(
                         Box(
                             modifier = Modifier
                                 .width(77.dp)
-                                .height(45.dp)  // 50.dp에서 35.dp로 변경
+                                .height(45.dp)
+                                .weight(1f)// 50.dp에서 35.dp로 변경
                                 .background(color)
                                 .border(0.5.dp, if (currentSubject != null) color else Color.Gray)
                                 .clickable {
