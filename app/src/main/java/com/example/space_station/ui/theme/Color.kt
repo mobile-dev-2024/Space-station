@@ -24,3 +24,7 @@ val gaugeBaBackground = Color(0xFF7C8291)
 val BackgroundColor = Color(0xFF1E1F2B)
 val MainContainerColor = Color(0xFF393A54)
 val BottomBarBackgroundColor = Color(0xFF3B3C46)
+
+val PastelBlue = Color(0xFFAEC6FF)
+val PastelGreen = Color(0xFFC4F4C6)
+val PastelYellow = Color(0xFFFFF4B1)

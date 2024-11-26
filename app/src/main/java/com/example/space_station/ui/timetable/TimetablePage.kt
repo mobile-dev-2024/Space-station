@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.space_station.ui.layout.BottomBarComponent
 import com.example.space_station.ui.theme.BackgroundColor
+import com.example.space_station.ui.theme.PastelBlue
+import com.example.space_station.ui.theme.PastelGreen
+import com.example.space_station.ui.theme.PastelYellow
 import com.example.space_station.ui.theme.Pink80
 import com.example.space_station.ui.theme.Purple40
 import com.example.space_station.ui.theme.Purple80
@@ -65,20 +69,32 @@ fun TimetablePage(
     onSettingClicked: () -> Unit,
     onRemoveSubject: (TimetableSubject) -> Unit
 ) {
-    val colorList = listOf(Pink80, Purple80, PurpleGrey80)
+    val colorList = listOf(Pink80, Purple80, PurpleGrey80, PastelBlue, PastelGreen,  PastelYellow)
     var selectedSubject by remember { mutableStateOf<TimetableSubject?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
 
     // 과목명에 따른 색상 매핑을 저장할 Map 생성
-    val subjectColorMap = remember {
-        subjects
-            .map { it.name }
-            .distinct()
-            .mapIndexed { index, name ->
-                name to colorList[index % colorList.size]
-            }
-            .toMap()
+//    val subjectColorMap = remember {
+//        subjects
+//            .map { it.name }
+//            .distinct()
+//            .mapIndexed { index, name ->
+//                name to colorList[index % colorList.size]
+//            }
+//            .toMap()
+//    }
+    val subjectColorMap by remember(subjects) {
+        derivedStateOf {
+            subjects
+                .map { it.name }
+                .distinct()
+                .mapIndexed { index, name ->
+                    name to colorList[index % colorList.size]
+                }
+                .toMap()
+        }
     }
+
 
     Scaffold(
         containerColor = BackgroundColor,
@@ -153,7 +169,8 @@ fun TimetablePage(
                         color = Color.White,
                         modifier = Modifier
                             .width(77.dp)
-                            .padding(bottom = 4.dp),
+                            .padding(bottom = 4.dp)
+                            .weight(1f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -197,7 +214,8 @@ fun TimetablePage(
                         Box(
                             modifier = Modifier
                                 .width(77.dp)
-                                .height(45.dp)  // 50.dp에서 35.dp로 변경
+                                .height(45.dp)
+                                .weight(1f)// 50.dp에서 35.dp로 변경
                                 .background(color)
                                 .border(0.5.dp, if (currentSubject != null) color else Color.Gray)
                                 .clickable {
