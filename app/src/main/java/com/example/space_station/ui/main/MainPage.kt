@@ -65,10 +65,12 @@ fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "현재 강의실: ${timeTable.buildingInfo}관 ${timeTable.roomInfo}호",
+                                "현재 강의실: ${timeTable.buildingInfo} ${timeTable.roomInfo}",
                                 color = Color.White
                             )
                             Button(
+                                modifier = Modifier.weight(1.0f),
+
                                 onClick = {
                                     // 퇴실하기 동작 추가
                                     println("퇴실하기 클릭됨")
