@@ -48,6 +48,7 @@ class TimeTableModel: ViewModel() {
                 data.value = newData
             }
         }
+        Log.d("data load from excel", "excel Load")
     }
 
     fun getNowKoreanDayOfWeek(): String {
@@ -220,6 +221,7 @@ class TimeTableModel: ViewModel() {
             }
         }
         _subjects.value = updatedSubjects
+        Log.d("loadTimeTableDB", "Load TimeTable DB finished")
     }
 
 

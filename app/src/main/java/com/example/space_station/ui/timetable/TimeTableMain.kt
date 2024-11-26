@@ -36,7 +36,7 @@ fun TimeTableMain(
     ) {
         composable(route = "timeTable") {
             val subjects by timeTableModel.subjects.observeAsState(emptyList())
-            timeTableModel.loadUserTimeTableFromDB(userViewModel.userSettingData.collectAsState().value.timetable)
+
             TimetablePage(
                 userViewModel = userViewModel,
                 currentPage = currentPage,

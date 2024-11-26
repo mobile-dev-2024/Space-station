@@ -1,6 +1,7 @@
 package com.example.space_station.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -143,6 +144,8 @@ class LectureTimetable: ViewModel() {
 //        다빈치 캠퍼스 건물이 떠서 310관 이하로 가져가야 함
         buildings.value =
             data.value.mapNotNull { it.getOrNull(11) }.distinct().sorted().filter { it <= "310관" }
+
+        Log.d("LoadExcelData","finish Load ExcelData")
     }
 
 
@@ -271,6 +274,7 @@ class LectureTimetable: ViewModel() {
         latestPushWorkId.value = uuid
         updateFireBaseCheckInRoomFunc = roomFunc
         updateFireBaseLatestPushWorkIdFunc = uuidFunc
+
     }
 }
 

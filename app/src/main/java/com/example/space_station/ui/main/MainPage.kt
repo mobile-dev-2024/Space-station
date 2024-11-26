@@ -5,9 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -62,11 +65,15 @@ fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)
                     Log.d("present Subject",timeTable.toString())
                     if (timeTable != null) {
                         Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
                                 "현재 강의실: ${timeTable.buildingInfo} ${timeTable.roomInfo}",
                                 color = Color.White
+                            )
+                            Spacer(
+                                modifier = Modifier.size(20.dp)
                             )
                             Button(
                                 modifier = Modifier.weight(1.0f),
