@@ -3,6 +3,7 @@ package com.example.space_station.navigation
 import SettingPage
 import android.Manifest
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import com.example.space_station.viewmodel.UserViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import java.util.UUID
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -61,7 +63,41 @@ fun PageManager(
 
     val navController = rememberNavController()
     val user = FirebaseManager.instance.getCurrentUser()
-    isLoggedIn =  if(user!=null) true else false
+    if (user != null) {
+        Log.d("user",user.uid.toString())
+    }
+    isLoggedIn =  if(user!=null) {
+
+        FirebaseManager.instance.getUserSettingData(
+            uid = user.uid.toString(),
+            onSuccess = {
+                Log.d("LoginCheck",it.toString())
+                userViewModel.updateUid(user.uid)
+                userViewModel.updateUserSettingData(it)
+
+                //로그인 하고 세팅데이터 불러 오면 렉쳐테이블 뷰모델에 데이터 업로드 함
+                val uuid = userViewModel.userSettingData.value.uuid
+                lectureTimetableViewModel.updateFirebaseDataToApp(
+                    checkedInRoom = userViewModel.userSettingData.value.room,
+                    uuid = if (uuid != "") {
+                        UUID.fromString(uuid)} else {null},
+                    //뷰모델 안의 함수를 다른 뷰모델 안에서 호출하기 어렵기 때문에 여기서 함수를 넘겨줌
+                    roomFunc = { userViewModel.updateCheckInRoom(it) },
+                    uuidFunc = { userViewModel.updateCheckInRoomPushID(it) }
+                )
+                // 북마크 모델에 데이터 업로드 함
+                bookMarkModel.updateFirebaseDataToApp(
+                    bookMark = userViewModel.userSettingData.value.bookmarks,
+                    updateFireBase = { userViewModel.updateBookmark(it) }
+                )
+            },
+            onError = {}
+        )
+        true
+    } else false
+    if(isLoggedIn){
+
+    }
 
 
     NavHost(navController = navController, startDestination = if (isLoading) "LoadingPage" else if (isLoggedIn) "MainPage" else "LoginPage") {

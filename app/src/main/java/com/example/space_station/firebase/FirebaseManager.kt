@@ -79,6 +79,7 @@ class FirebaseManager(
     }
 
     fun updateUserSettingData(uid: String, userSettingData: UserSettingData) {
+        Log.d("Update",uid)
         _db.collection("users")
             .document(uid)
             .set(userSettingData)

@@ -1,5 +1,6 @@
 package com.example.space_station.ui.main
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)
                 ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     val timeTable = timeTableModel.getPresentSubject()
+                    Log.d("present Subject",timeTable.toString())
                     if (timeTable != null) {
                         Row(
                             modifier = Modifier.fillMaxWidth()
