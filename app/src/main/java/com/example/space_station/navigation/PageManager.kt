@@ -30,6 +30,7 @@ import com.example.space_station.viewmodel.BookMarkModel
 import com.example.space_station.viewmodel.LectureTimetable
 import com.example.space_station.viewmodel.TimeTableModel
 import com.example.space_station.viewmodel.UserViewModel
+import com.example.space_station.viewmodel.recommendLecture
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -48,6 +49,7 @@ fun PageManager(
 
     val lectureTimetableViewModel = viewModel<LectureTimetable>()
     val timeTableViewModel = viewModel<TimeTableModel>()
+    val RecommendViewModel = viewModel<recommendLecture>()
 
     lectureTimetableViewModel.loadExcelData(context)
 //    timeTableViewModel.loadExcelData(context)
@@ -138,6 +140,8 @@ fun PageManager(
             when(currentPage){
                 0-> MainPage(
                     timeTableModel = timeTableViewModel,
+                    lectureTimetable = lectureTimetableViewModel,
+                    recommendViewModel = RecommendViewModel,
                     currentPage = currentPage,
                     onClick = { x: Int -> currentPage = x },
                     onSettingClick = {
