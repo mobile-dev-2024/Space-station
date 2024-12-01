@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.time.DayOfWeek
@@ -116,6 +119,8 @@ class LectureTimetable: ViewModel() {
         }
     }
 
+    private val _loadFinish = MutableStateFlow(false)
+    val loadFinish : StateFlow<Boolean> =_loadFinish.asStateFlow()
 
     // 데이터를 비동기로 로드
     fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx") {
@@ -140,6 +145,8 @@ class LectureTimetable: ViewModel() {
                 // 데이터 로드 완료 후 상태 업데이트
                 data.value = newData
             }
+            _loadFinish.value = true
+            Log.d("dataTest2", data.value.get(data.value.size-1).toString())
         }
 //        다빈치 캠퍼스 건물이 떠서 310관 이하로 가져가야 함
         buildings.value =

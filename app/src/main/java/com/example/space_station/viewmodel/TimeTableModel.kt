@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.time.DayOfWeek
@@ -20,6 +23,9 @@ class TimeTableModel: ViewModel() {
 
     var data = mutableStateOf<List<List<String>>>(emptyList())
         private set
+
+    private val _loadFinish = MutableStateFlow(false)
+    val loadFinish : StateFlow<Boolean> =_loadFinish.asStateFlow()
 
     private val _subjects = MutableLiveData<List<TimetableSubject>>()
     val subjects: LiveData<List<TimetableSubject>> = _subjects
@@ -47,6 +53,8 @@ class TimeTableModel: ViewModel() {
                 // 데이터 로드 완료 후 상태 업데이트
                 data.value = newData
             }
+            _loadFinish.value = true
+            Log.d("dataTest1", data.value.get(data.value.size-1).toString())
         }
         Log.d("data load from excel", "excel Load")
     }
