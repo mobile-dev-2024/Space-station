@@ -48,8 +48,7 @@ fun PageManager(
 
     val lectureTimetableViewModel = viewModel<LectureTimetable>()
     val timeTableViewModel = viewModel<TimeTableModel>()
-    lectureTimetableViewModel.loadExcelData(context)
-    timeTableViewModel.loadExcelData(context)
+
 //                timeTableViewModel.loadUserTimeTableFromDB() // 안에 firebase에서 주는 coursecode List<String> 넣어야 함
 
     // 알림 권한 요청
@@ -76,7 +75,8 @@ fun PageManager(
                 Log.d("LoginCheck",it.toString())
                 userViewModel.updateUid(user.uid)
                 userViewModel.updateUserSettingData(it)
-
+                lectureTimetableViewModel.loadExcelData(context)
+                timeTableViewModel.loadExcelData(context)
                 //로그인 하고 세팅데이터 불러 오면 렉쳐테이블 뷰모델에 데이터 업로드 함
                 val uuid = userViewModel.userSettingData.value.uuid
                 lectureTimetableViewModel.updateFirebaseDataToApp(
@@ -98,6 +98,8 @@ fun PageManager(
                 Log.d("backgroundWork",isBackground.toString())
             },
             onError = {
+                lectureTimetableViewModel.loadExcelData(context)
+                timeTableViewModel.loadExcelData(context)
                 isBackground = true
 
 
@@ -106,6 +108,8 @@ fun PageManager(
 
     }
     else{
+        lectureTimetableViewModel.loadExcelData(context)
+        timeTableViewModel.loadExcelData(context)
         isBackground = true
         Log.d("backgroundWork",isBackground.toString())
     }
