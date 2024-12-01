@@ -50,7 +50,7 @@ fun PageManager(
     val timeTableViewModel = viewModel<TimeTableModel>()
 
     lectureTimetableViewModel.loadExcelData(context)
-    timeTableViewModel.loadExcelData(context)
+//    timeTableViewModel.loadExcelData(context)
 //                timeTableViewModel.loadUserTimeTableFromDB() // 안에 firebase에서 주는 coursecode List<String> 넣어야 함
 
     // 알림 권한 요청
@@ -92,7 +92,8 @@ fun PageManager(
                     bookMark = userViewModel.userSettingData.value.bookmarks,
                     updateFireBase = { userViewModel.updateBookmark(it) }
                 )
-                if(lectureTimetableViewModel.loadFinish.value && timeTableViewModel.loadFinish.value){
+                if(lectureTimetableViewModel.loadFinish.value){
+                    timeTableViewModel.setData(lectureTimetableViewModel.forPassData)
                     timeTableViewModel.loadUserTimeTableFromDB(userViewModel.userSettingData.value.timetable)
                     isBackground = true
                 }
