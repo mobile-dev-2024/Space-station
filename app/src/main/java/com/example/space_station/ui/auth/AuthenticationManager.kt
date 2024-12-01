@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.space_station.firebase.FirebaseManager
 import com.example.space_station.viewmodel.BookMarkModel
 import com.example.space_station.viewmodel.LectureTimetable
+import com.example.space_station.viewmodel.TimeTableModel
 import com.example.space_station.viewmodel.UserViewModel
 import java.util.UUID
 
@@ -20,7 +21,8 @@ fun AuthenticationManager(
     onLoginSuccess: ()->Unit,
     userViewModel: UserViewModel,
     lectureTimetable: LectureTimetable,
-    bookMarkModel: BookMarkModel
+    bookMarkModel: BookMarkModel,
+    timeTableModel: TimeTableModel
 ) {
     var isRegisterFail by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
@@ -50,15 +52,19 @@ fun AuthenticationManager(
                                     roomFunc = { userViewModel.updateCheckInRoom(it) },
                                     uuidFunc = { userViewModel.updateCheckInRoomPushID(it) }
                                 )
+                                Log.d("checkedInRoom","success")
                                 // 북마크 모델에 데이터 업로드 함
                                 bookMarkModel.updateFirebaseDataToApp(
                                     bookMark = userViewModel.userSettingData.value.bookmarks,
                                     updateFireBase = { userViewModel.updateBookmark(it) }
                                 )
+                                Log.d("bookmarks","success")
+                                timeTableModel.loadUserTimeTableFromDB(userViewModel.userSettingData.value.timetable)
+
+                                onLoginSuccess()
                             },
                             onError = {}
                         )
-                        onLoginSuccess()
                     }
                 }
             )

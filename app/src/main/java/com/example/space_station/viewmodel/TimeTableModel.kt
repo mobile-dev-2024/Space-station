@@ -48,6 +48,7 @@ class TimeTableModel: ViewModel() {
                 data.value = newData
             }
         }
+        Log.d("data load from excel", "excel Load")
     }
 
     fun getNowKoreanDayOfWeek(): String {
@@ -191,11 +192,15 @@ class TimeTableModel: ViewModel() {
         val todaySubjects = _subjects.value.orEmpty().filter { it.day == currentDay }
         Log.d("today Subject", todaySubjects.toString())
 
-        return todaySubjects.find { subject ->
+        val test =  todaySubjects.find { subject ->
+            Log.d("Subject", subject.toString())
             val subjectStartTime = LocalTime.of(subject.startHour, subject.startMinute)
             val subjectEndTime = LocalTime.of(subject.endHour, subject.endMinute)
+            Log.d("start end ", subjectStartTime.toString()+subjectEndTime.toString())
             currentTime.isAfter(subjectStartTime) && currentTime.isBefore(subjectEndTime)
         }
+        Log.d("find", test.toString())
+        return test
     }
 
     // db에 저장할 정보 return
@@ -216,6 +221,7 @@ class TimeTableModel: ViewModel() {
             }
         }
         _subjects.value = updatedSubjects
+        Log.d("loadTimeTableDB", "Load TimeTable DB finished")
     }
 
 

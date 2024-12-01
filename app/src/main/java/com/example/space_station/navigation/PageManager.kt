@@ -6,6 +6,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,12 +43,12 @@ fun PageManager(
     var currentPage by rememberSaveable { mutableIntStateOf(0) }
     var isLoading by rememberSaveable { mutableStateOf(true) }
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
+    var isBackground by rememberSaveable { mutableStateOf(false) }
     val userViewModel = viewModel<UserViewModel>()
 
     val lectureTimetableViewModel = viewModel<LectureTimetable>()
     val timeTableViewModel = viewModel<TimeTableModel>()
-    lectureTimetableViewModel.loadExcelData(context)
-    timeTableViewModel.loadExcelData(context)
+
 //                timeTableViewModel.loadUserTimeTableFromDB() // 안에 firebase에서 주는 coursecode List<String> 넣어야 함
 
     // 알림 권한 요청
@@ -66,7 +67,7 @@ fun PageManager(
     if (user != null) {
         Log.d("user",user.uid.toString())
     }
-    isLoggedIn =  if(user!=null) {
+    if(user!=null) {
 
         FirebaseManager.instance.getUserSettingData(
             uid = user.uid.toString(),
@@ -74,7 +75,8 @@ fun PageManager(
                 Log.d("LoginCheck",it.toString())
                 userViewModel.updateUid(user.uid)
                 userViewModel.updateUserSettingData(it)
-
+                lectureTimetableViewModel.loadExcelData(context)
+                timeTableViewModel.loadExcelData(context)
                 //로그인 하고 세팅데이터 불러 오면 렉쳐테이블 뷰모델에 데이터 업로드 함
                 val uuid = userViewModel.userSettingData.value.uuid
                 lectureTimetableViewModel.updateFirebaseDataToApp(
@@ -90,17 +92,30 @@ fun PageManager(
                     bookMark = userViewModel.userSettingData.value.bookmarks,
                     updateFireBase = { userViewModel.updateBookmark(it) }
                 )
+                timeTableViewModel.loadUserTimeTableFromDB(userViewModel.userSettingData.value.timetable)
+                isLoggedIn = true
+                isBackground = true
+                Log.d("backgroundWork",isBackground.toString())
             },
-            onError = {}
-        )
-        true
-    } else false
-    if(isLoggedIn){
+            onError = {
+                lectureTimetableViewModel.loadExcelData(context)
+                timeTableViewModel.loadExcelData(context)
+                isBackground = true
 
+
+            }
+        )
+
+    }
+    else{
+        lectureTimetableViewModel.loadExcelData(context)
+        timeTableViewModel.loadExcelData(context)
+        isBackground = true
+        Log.d("backgroundWork",isBackground.toString())
     }
 
 
-    NavHost(navController = navController, startDestination = if (isLoading) "LoadingPage" else if (isLoggedIn) "MainPage" else "LoginPage") {
+    NavHost(navController = navController, startDestination =if (!isBackground)"LoadingPage" else if (isLoading) "LoadingPage" else if (isLoggedIn) "MainPage" else "LoginPage") {
         composable("LoadingPage") {
             LoadingPage(onClick = {
                 isLoading = false
@@ -109,10 +124,12 @@ fun PageManager(
 
         composable("LoginPage") {
             AuthenticationManager(
-                onLoginSuccess = { isLoggedIn = true },
+                onLoginSuccess = { isLoggedIn = true
+                                 Log.d("Login","success")},
                 userViewModel = userViewModel,
                 lectureTimetable = lectureTimetableViewModel,
                 bookMarkModel = bookMarkModel,
+                timeTableModel = timeTableViewModel
             )
         }
 
