@@ -59,6 +59,10 @@ class TimeTableModel: ViewModel() {
         Log.d("data load from excel", "excel Load")
     }
 
+    fun setData(newData : List<List<String>>) {
+        data.value = newData
+    }
+
     fun getNowKoreanDayOfWeek(): String {
         val currentDateTime = LocalDateTime.now()
         return when (currentDateTime.dayOfWeek) {

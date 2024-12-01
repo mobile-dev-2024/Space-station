@@ -26,6 +26,8 @@ class LectureTimetable: ViewModel() {
     var data = mutableStateOf<List<List<String>>>(emptyList())
         private set
 
+    var forPassData: List<List<String>> = emptyList()
+
     var buildings = mutableStateOf<List<String>>(emptyList())
         private set
 
@@ -146,6 +148,7 @@ class LectureTimetable: ViewModel() {
                 data.value = newData
             }
             _loadFinish.value = true
+            forPassData = data.value
             Log.d("dataTest2", data.value.get(data.value.size-1).toString())
         }
 //        다빈치 캠퍼스 건물이 떠서 310관 이하로 가져가야 함
