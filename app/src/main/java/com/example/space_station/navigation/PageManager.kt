@@ -100,8 +100,7 @@ fun PageManager(
                 Log.d("backgroundWork",isBackground.toString())
             },
             onError = {
-                lectureTimetableViewModel.loadExcelData(context)
-                timeTableViewModel.loadExcelData(context)
+
                 isBackground = true
 
 
@@ -110,8 +109,7 @@ fun PageManager(
 
     }
     else{
-        lectureTimetableViewModel.loadExcelData(context)
-        timeTableViewModel.loadExcelData(context)
+
         isBackground = true
         Log.d("backgroundWork",isBackground.toString())
     }
