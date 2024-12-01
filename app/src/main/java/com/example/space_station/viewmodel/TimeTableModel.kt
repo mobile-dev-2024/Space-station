@@ -25,7 +25,7 @@ class TimeTableModel: ViewModel() {
     val subjects: LiveData<List<TimetableSubject>> = _subjects
 
     // 데이터를 비동기로 로드
-    fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx") {
+    fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx",onComplete:()->Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             context.assets.open(fileName).use { inputStream ->
                 val workbook = WorkbookFactory.create(inputStream)
@@ -46,7 +46,10 @@ class TimeTableModel: ViewModel() {
 
                 // 데이터 로드 완료 후 상태 업데이트
                 data.value = newData
+                Log.d("DataTest",data.value.get(data.value.size-1).toString())
+                onComplete()
             }
+
         }
         Log.d("data load from excel", "excel Load")
     }
