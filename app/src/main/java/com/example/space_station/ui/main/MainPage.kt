@@ -25,10 +25,18 @@ import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.unit.dp
 import com.example.space_station.ui.layout.BottomBarComponent
 import com.example.space_station.ui.layout.TopBarComponent
+import com.example.space_station.viewmodel.LectureTimetable
 import com.example.space_station.viewmodel.TimeTableModel
+import com.example.space_station.viewmodel.recommendLecture
 
 @Composable
-fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)->Unit,onSettingClick:()->Unit) {
+fun MainPage(
+    timeTableModel: TimeTableModel,
+    lectureTimetable: LectureTimetable,
+    recommendViewModel: recommendLecture,
+    currentPage : Int,
+    onClick: (x:Int)->Unit,
+    onSettingClick:()->Unit) {
 
     Scaffold(
         topBar = {
@@ -100,30 +108,47 @@ fun MainPage(timeTableModel: TimeTableModel, currentPage : Int, onClick: (x:Int)
 
 
             }
-        }
-        // Recommendation Cards
-        repeat(2) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text("강의실 추천", color = Color(0xFFB2FF59))
-                        Text("310관 729호", color = Color.White)
+            // Recommendation Cards
+            val NextSubject = recommendViewModel.getNextSubject(
+                Subject = timeTableModel.subjects.value
+            )
+
+            NextSubject?.let {
+
+                val ClosestAvailableRoom = recommendViewModel.getClosestAvailableRoom(
+                    it.buildingInfo,
+                    it.roomInfo,
+                    getUsedRooms = lectureTimetable::getUsedRooms,
+                    getAllRoomsByBuilding = lectureTimetable::getAllRoomsByBuilding
+                )
+
+                ClosestAvailableRoom?.let {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column {
+                                Text("강의실 추천", color = Color(0xFFB2FF59))
+                                Text("${NextSubject.buildingInfo} ${ClosestAvailableRoom?.second}", color = Color.White)
+                            }
+                            Button(onClick = { /* Enter room action */ }) {
+                                Text("입실하기")
+                            }
+                        }
                     }
-                    Button(onClick = { /* Enter room action */ }) {
-                        Text("입실하기")
-                    }
+
                 }
+
             }
+
         }
     }
 
