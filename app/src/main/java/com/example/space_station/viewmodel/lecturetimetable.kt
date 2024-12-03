@@ -81,6 +81,7 @@ class LectureTimetable: ViewModel() {
             WorkManager.getInstance(context).cancelWorkById(it)
             latestPushWorkId.value = null
         }
+        checkOutRoom()
     }
     private fun checkOutRoom() {
         checkedInRooms.value = null
