@@ -140,7 +140,7 @@ fun TimetablePage(
         }
 
     ) { innerScaffoldPadding ->
-        val endTime = 18
+        val endTime = 23
         val times = (8..endTime).flatMap { hour ->
             listOf(if (hour > 12) "${hour - 12}" else "$hour", " ")
         }
