@@ -95,14 +95,15 @@ fun MainPage(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "현재 강의실: ${checkedInRoom.building} ${checkedInRoom.room}",
+                                modifier = Modifier.weight(1.0f),
+                                text = "현재 강의실: ${checkedInRoom.building} ${checkedInRoom.room}",
                                 color = Color.White
                             )
                             Spacer(
                                 modifier = Modifier.size(20.dp)
                             )
                             Button(
-                                modifier = Modifier.weight(1.0f),
+
 
                                 onClick = {
                                     lectureTimetable.CheckOutRoom(context)
@@ -164,11 +165,15 @@ fun MainPage(
                                 modifier = Modifier.padding(16.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Column {
+                                Column(
+                                    modifier = Modifier.weight(1.0f)
+                                ) {
                                     Text("강의실 추천", color = Color(0xFFB2FF59))
                                     Text("${NextSubject.buildingInfo} ${ClosestAvailableRoom?.second}", color = Color.White)
                                 }
-                                Button(onClick = {
+                                Button(
+
+                                    onClick = {
                                     //10분전에 알려줌
                                     //체크인 함
 
@@ -247,7 +252,8 @@ fun MainPage(
                                         )
                                     }
 
-                                }) {
+                                }
+                                    ) {
                                     Text("입실하기")
                                 }
                             }
