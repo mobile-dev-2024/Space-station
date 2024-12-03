@@ -41,7 +41,7 @@ class recommendLecture: ViewModel() {
         return currentDateTime.format(formatter)
     }
 
-    private fun extractionFloor(roomNumber: String): String {
+    fun extractionFloor(roomNumber: String): String {
         // 층수 추출 로직
         val floor = when {
             roomNumber.startsWith("B") -> "-${roomNumber.drop(1).take(1)}" // 'B'로 시작하면 'B'와 다음 숫자 포함
