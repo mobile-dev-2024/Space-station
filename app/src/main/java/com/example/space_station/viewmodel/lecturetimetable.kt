@@ -283,7 +283,8 @@ class LectureTimetable: ViewModel() {
     }
 
     fun updateFirebaseDataToApp(checkedInRoom: CheckedInRoom, uuid: UUID?, roomFunc: (CheckedInRoom?) -> Unit, uuidFunc: (UUID?) -> Unit) {
-        checkedInRooms.value = checkedInRoom
+
+        checkedInRooms.value = if (checkedInRoom.building.isNotEmpty()) checkedInRoom else null
         latestPushWorkId.value = uuid
         updateFireBaseCheckInRoomFunc = roomFunc
         updateFireBaseLatestPushWorkIdFunc = uuidFunc

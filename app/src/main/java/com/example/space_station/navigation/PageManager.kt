@@ -148,7 +148,8 @@ fun PageManager(
                     onClick = { x: Int -> currentPage = x },
                     onSettingClick = {
                         navController.navigate("SettingPage")
-                    }
+                    },
+                    notificationService = notificationService,
                 )
                 1->SearchMain(
                     currentPage = currentPage,
