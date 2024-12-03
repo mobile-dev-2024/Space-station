@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.time.DayOfWeek
@@ -22,6 +25,8 @@ class LectureTimetable: ViewModel() {
 
     var data = mutableStateOf<List<List<String>>>(emptyList())
         private set
+
+    var forPassData: List<List<String>> = emptyList()
 
     var buildings = mutableStateOf<List<String>>(emptyList())
         private set
@@ -76,6 +81,7 @@ class LectureTimetable: ViewModel() {
             WorkManager.getInstance(context).cancelWorkById(it)
             latestPushWorkId.value = null
         }
+        checkOutRoom()
     }
     private fun checkOutRoom() {
         checkedInRooms.value = null
@@ -116,6 +122,8 @@ class LectureTimetable: ViewModel() {
         }
     }
 
+    private val _loadFinish = MutableStateFlow(false)
+    val loadFinish : StateFlow<Boolean> =_loadFinish.asStateFlow()
 
     // 데이터를 비동기로 로드
     fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx",onComplete:()->Unit) {
@@ -142,6 +150,9 @@ class LectureTimetable: ViewModel() {
                 Log.d("DataTest",data.value.get(data.value.size-1).toString())
                 onComplete()
             }
+            _loadFinish.value = true
+            forPassData = data.value
+            Log.d("dataTest2", data.value.get(data.value.size-1).toString())
         }
 //        다빈치 캠퍼스 건물이 떠서 310관 이하로 가져가야 함
         buildings.value =

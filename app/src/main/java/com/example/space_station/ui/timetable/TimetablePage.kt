@@ -285,7 +285,7 @@ fun TimetablePage(
                                 selectedSubject = null
                                 showBottomSheet = false
                                 Log.d("TimeTableManager",subjects.map{it.courseCode}.toString())
-                                userViewModel.updateTimeTable(subjects.map{it.courseCode})
+                                    userViewModel.updateTimeTable(subjects.map{it.courseCode}.distinct())
 
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)

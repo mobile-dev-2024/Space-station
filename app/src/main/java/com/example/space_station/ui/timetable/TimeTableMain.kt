@@ -71,7 +71,7 @@ fun TimeTableMain(
                 },
                 addLectureToTimetable = { subject ->
                     val isSuccess = timeTableModel.addSubject(subject)
-                    if(isSuccess)  userViewModel.updateTimeTable(subjects.map{it.courseCode})
+                    if(isSuccess)  userViewModel.updateTimeTable(subjects.map{it.courseCode}.distinct())
                     isSuccess
                 }
             )
