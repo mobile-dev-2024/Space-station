@@ -126,7 +126,7 @@ class LectureTimetable: ViewModel() {
     val loadFinish : StateFlow<Boolean> =_loadFinish.asStateFlow()
 
     // 데이터를 비동기로 로드
-    fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx",onComplete:()->Unit) {
+    fun loadExcelData(context: Context, fileName: String = "lecturetimetable.xlsx") {
         viewModelScope.launch(Dispatchers.IO) {
             context.assets.open(fileName).use { inputStream ->
                 val workbook = WorkbookFactory.create(inputStream)
@@ -148,7 +148,7 @@ class LectureTimetable: ViewModel() {
                 // 데이터 로드 완료 후 상태 업데이트
                 data.value = newData
                 Log.d("DataTest",data.value.get(data.value.size-1).toString())
-                onComplete()
+
             }
             _loadFinish.value = true
             forPassData = data.value
