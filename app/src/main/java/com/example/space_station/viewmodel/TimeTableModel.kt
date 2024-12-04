@@ -138,7 +138,8 @@ class TimeTableModel: ViewModel() {
                 endMinute = timeParts[3],
                 name = this.courseName,
                 roomInfo = this.roomInfo,
-                buildingInfo = this.buildingInfo
+                buildingInfo = this.buildingInfo,
+                professorName = this.professor
             )
         }
     }
@@ -266,5 +267,6 @@ data class TimetableSubject(
     val endMinute : Int,
     val name: String,
     val roomInfo: String,
-    val buildingInfo: String
+    val buildingInfo: String,
+    val professorName: String
 )

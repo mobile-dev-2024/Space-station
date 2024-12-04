@@ -250,6 +250,7 @@ fun TimetablePage(
 
 
         // ModalBottomSheet
+        // ModalBottomSheet
         if (selectedSubject != null && showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
@@ -258,39 +259,67 @@ fun TimetablePage(
                 },
                 containerColor = Color.Gray
             ) {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(120.dp),
-                    contentAlignment = Alignment.Center
+                        .padding(16.dp)
                 ) {
+                    // 과목 이름
+                    Text(
+                        text = "과목명: ${selectedSubject?.name}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    // 과목 시간
+                    Text(
+                        text = "시간: ${selectedSubject?.startHour}:${String.format("%02d", selectedSubject?.startMinute)} ~ " +
+                                "${selectedSubject?.endHour}:${String.format("%02d", selectedSubject?.endMinute)}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    // 강의실 정보
+                    Text(
+                        text = "강의실: ${selectedSubject?.buildingInfo} ${selectedSubject?.roomInfo}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    // 기타 정보 (필요 시 추가)
+                    Text(
+                        text = "교수명: ${selectedSubject?.professorName ?: "정보 없음"}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(
-                            text = "${selectedSubject?.name} 과목을 삭제하시겠습니까?",
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodyLarge,
-                            maxLines = 2, // 텍스트가 길어지면 줄바꿈을 하도록 설정
-//                            overflow = androidx.compose.ui.text. , // 텍스트가 너무 길면 말줄임표 추가
-                            modifier = Modifier.weight(1f) // 텍스트가 버튼과 겹치지 않도록 공간을 차지하게 함
-                        )
+                        // 삭제 버튼
                         Button(
                             onClick = {
                                 selectedSubject?.let { onRemoveSubject(it) }
                                 selectedSubject = null
                                 showBottomSheet = false
-                                Log.d("TimeTableManager",subjects.map{it.courseCode}.toString())
-                                    userViewModel.updateTimeTable(subjects.map{it.courseCode}.distinct())
-
+                                Log.d("TimeTableManager", subjects.map { it.courseCode }.toString())
+                                userViewModel.updateTimeTable(subjects.map { it.courseCode }.distinct())
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                         ) {
                             Text("삭제", color = Color.White)
+                        }
+
+                        // 닫기 버튼
+                        Button(
+                            onClick = {
+                                selectedSubject = null
+                                showBottomSheet = false
+                            }
+                        ) {
+                            Text("닫기", color = Color.White)
                         }
                     }
                 }
