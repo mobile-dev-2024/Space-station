@@ -76,17 +76,22 @@ fun MainPage(
                     Log.d("present Subject",timeTable.toString())
                     Log.d("present ClassRoon",checkedInRoom.toString())
                     if (timeTable != null) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                        Column(
+                            verticalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "현재 강의실: ${timeTable.buildingInfo} ${timeTable.roomInfo}",
-                                color = Color.White
+                                "수업중입니다",
+                                color = Color.Cyan
                             )
                             Spacer(
                                 modifier = Modifier.size(20.dp)
                             )
+                            Text(
+                                "현재 강의실: ${timeTable.buildingInfo} ${timeTable.roomInfo}",
+                                color = Color.White
+                            )
+
 
                         }
                     }else if(checkedInRoom != null){
@@ -239,7 +244,7 @@ fun MainPage(
                                             context = context,
                                             title = "퇴실 알림",
                                             content = message,
-                                            delayInMinutes = pushDelay - 10 //10분전에 알려줌
+                                            delayInMinutes =0 //10분전에 알려줌
                                         )
                                         lectureTimetable.observeWorkCompletion(
                                             workerID.id,
